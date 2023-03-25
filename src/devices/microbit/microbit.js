@@ -86,6 +86,38 @@ const Level = {
     Low: '0'
 };
 
+const Chords = {
+    LowC: 131,
+    LowC_Minor: 139,
+    LowD: 147,
+    LowD_Minor: 156,
+    LowE: 165,
+    LowA: 175,
+    LowF_Minor: 185,
+    LowG: 196,
+}
+
+const Beats = {
+    Whole: 1000,
+    Half: 500,
+    Quarter: 250,
+    Eighth: 125,
+    Sixteenth: 62.5,
+    Double: 2000,
+    Breve: 2000,
+}
+
+// const Chords = {
+//     LowC: "low C",
+//     LowC_Minor: "Low C#",
+//     LowD: "Low D",
+//     LowD_Minor: "Low D#",
+//     LowE: "Low E",
+//     LowA: "Low A",
+//     LowF_Minor: "Low F#",
+//     LowG: "Low G",
+// }
+
 /**
  * Manage communication with a Microbit peripheral over a OpenBlock Link client socket.
  */
@@ -453,6 +485,81 @@ class OpenBlockMicrobitDevice {
                 });
         }
         return channel;
+    }
+
+    get CHORDS_MENU () {
+        return [
+            {
+                text: 'Low C',
+                value: Chords.LowC
+            },
+            {
+                text: 'Low C#',
+                value: Chords.LowC_Minor
+            },
+            {
+                text: 'Low D',
+                value: Chords.LowD
+            },
+            {
+                text: 'Low D#',
+                value: Chords.LowD_Minor
+            },
+            {
+                text: 'Low E',
+                value: Chords.LowE
+            },
+            {
+                text: 'Low A',
+                value: Chords.LowA
+            },
+            {
+                text: 'Low F',
+                value: Chords.LowF
+            },
+            {
+                text: 'Low F#',
+                value: Chords.LowF_Minor
+            },
+            {
+                text: 'Low G',
+                value: Chords.LowG
+            },
+            
+        ]
+    }
+
+    get BEATS_MENU () {
+        return [
+            {
+                text: '1',
+                value: Beats.Whole
+            },
+            {
+                text: '1/2',
+                value: Beats.Half
+            },
+            {
+                text: '1/4',
+                value: Beats.Quarter
+            },
+            {
+                text: '1/8',
+                value: Beats.Eighth
+            },
+            {
+                text: '1/16',
+                value: Beats.Sixteenth
+            },
+            {
+                text: '2',
+                value: Beats.Double
+            },
+            {
+                text: '4',
+                value: Beats.Breve
+            },
+        ]
     }
 
     /**
@@ -994,6 +1101,48 @@ class OpenBlockMicrobitDevice {
                 }
             ],
             menus: { }
+        },
+        {
+            id: 'music',
+            name: formatMessage({
+                id: 'microbit.category.music',
+                default: 'Musics',
+                description: 'The name of the microbit device music category'
+            }),
+            color1: '#4C97FF',
+            color2: '#3373CC',
+            color3: '#3373CC',
+            blocks: [
+                 {
+                    opcode: 'playTone',
+                    text: formatMessage({
+                        id: 'microbit.music.playTone',
+                        default: 'play tone chords [CHORDS] for [BEATS]',
+                        description: 'microbit play tone'
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        CHORDS: {
+                            type: ArgumentType.UINT10_NUMBER,
+                            menu: 'chords',
+                            defaultValue: Chords.LowC
+                        },
+                        BEATS: {
+                            type: ArgumentType.STRING,
+                            menu: "beats",
+                            defaultValue: Beats.Whole
+                        }
+                    }
+                },
+            ],
+            menus: {
+                chords: {
+                    items: this.CHORDS_MENU
+                },
+                beats: {
+                    items: this.BEATS_MENU
+                }
+            }
         }
         ];
     }

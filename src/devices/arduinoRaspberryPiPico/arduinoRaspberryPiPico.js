@@ -1,10 +1,10 @@
-const formatMessage = require('format-message');
+const formatMessage = require("format-message");
 
-const ArgumentType = require('../../extension-support/argument-type');
-const BlockType = require('../../extension-support/block-type');
-const ProgramModeType = require('../../extension-support/program-mode-type');
+const ArgumentType = require("../../extension-support/argument-type");
+const BlockType = require("../../extension-support/block-type");
+const ProgramModeType = require("../../extension-support/program-mode-type");
 
-const CommonPeripheral = require('../common/common-peripheral');
+const CommonPeripheral = require("../common/common-peripheral");
 
 /**
  * The list of USB device filters.
@@ -12,7 +12,7 @@ const CommonPeripheral = require('../common/common-peripheral');
  */
 const PNPID_LIST = [
     // Raspberry Pi Pico
-    'USB\\VID_2E8A&PID_000A'
+    "USB\\VID_2E8A&PID_000A",
 ];
 
 /**
@@ -24,7 +24,7 @@ const SERIAL_CONFIG = {
     dataBits: 8,
     stopBits: 1,
     dtr: true,
-    rts: false
+    rts: false,
 };
 
 /**
@@ -32,7 +32,7 @@ const SERIAL_CONFIG = {
  * @readonly
  */
 const DIVECE_OPT = {
-    type: 'arduino',
+    type: "arduino",
     // Sketch: 1984KB FS: 64KB
     // CPU Speed: 133MHz
     // Optimize: Small (-Os) (standard)
@@ -40,100 +40,107 @@ const DIVECE_OPT = {
     // Debug Port: Disabled
     // Debug Level: None
     // USB Stack: Pico SDK
-    fqbn: 'rp2040:rp2040:rpipico:flash=2097152_65536,freq=133,opt=Small,rtti=Disabled,dbgport=Disabled,dbglvl=None,usbstack=picosdk' // eslint-disable-line max-len
+    fqbn: "rp2040:rp2040:rpipico:flash=2097152_65536,freq=133,opt=Small,rtti=Disabled,dbgport=Disabled,dbglvl=None,usbstack=picosdk", // eslint-disable-line max-len
 };
 
 const Pins = {
-    GP0: '0',
-    GP1: '1',
-    GP2: '2',
-    GP3: '3',
-    GP4: '4',
-    GP5: '5',
-    GP6: '6',
-    GP7: '7',
-    GP8: '8',
-    GP9: '9',
-    GP10: '10',
-    GP11: '11',
-    GP12: '12',
-    GP13: '13',
-    GP14: '14',
-    GP15: '15',
-    GP16: '16',
-    GP17: '17',
-    GP18: '18',
-    GP19: '19',
-    GP20: '20',
-    GP21: '21',
-    GP22: '22',
-    GP23: '23',
-    GP24: '24',
-    GP25: '25',
-    GP26: '26',
-    GP27: '27',
-    GP28: '28'
+    GP0: "0",
+    GP1: "1",
+    GP2: "2",
+    GP3: "3",
+    GP4: "4",
+    GP5: "5",
+    GP6: "6",
+    GP7: "7",
+    GP8: "8",
+    GP9: "9",
+    GP10: "10",
+    GP11: "11",
+    GP12: "12",
+    GP13: "13",
+    GP14: "14",
+    GP15: "15",
+    GP16: "16",
+    GP17: "17",
+    GP18: "18",
+    GP19: "19",
+    GP20: "20",
+    GP21: "21",
+    GP22: "22",
+    GP23: "23",
+    GP24: "24",
+    GP25: "25",
+    GP26: "26",
+    GP27: "27",
+    GP28: "28",
 };
 
 const Level = {
-    High: 'HIGH',
-    Low: 'LOW'
+    High: "HIGH",
+    Low: "LOW",
 };
 
 const SerialNo = {
-    USB: '0',
-    Serial1: '1',
-    Serial2: '2'
+    USB: "0",
+    Serial1: "1",
+    Serial2: "2",
 };
 
 const Buadrate = {
-    B4800: '4800',
-    B9600: '9600',
-    B19200: '19200',
-    B38400: '38400',
-    B57600: '57600',
-    B76800: '76800',
-    B115200: '115200'
+    B4800: "4800",
+    B9600: "9600",
+    B19200: "19200",
+    B38400: "38400",
+    B57600: "57600",
+    B76800: "76800",
+    B115200: "115200",
 };
 
 const Eol = {
-    Warp: 'warp',
-    NoWarp: 'noWarp'
+    Warp: "warp",
+    NoWarp: "noWarp",
 };
 
 const Mode = {
-    Input: 'INPUT',
-    Output: 'OUTPUT',
-    InputPullup: 'INPUT_PULLUP',
-    InputPulldown: 'INPUT_PULLDOWN'
+    Input: "INPUT",
+    Output: "OUTPUT",
+    InputPullup: "INPUT_PULLUP",
+    InputPulldown: "INPUT_PULLDOWN",
 };
 
 const InterrupMode = {
-    Rising: 'RISING',
-    Falling: 'FALLING',
-    Change: 'CHANGE',
-    LowLevel: 'LOW',
-    HighLevel: 'HIGH'
+    Rising: "RISING",
+    Falling: "FALLING",
+    Change: "CHANGE",
+    LowLevel: "LOW",
+    HighLevel: "HIGH",
 };
 
 const DataType = {
-    Integer: 'INTEGER',
-    Decimal: 'DECIMAL',
-    String: 'STRING'
+    Integer: "INTEGER",
+    Decimal: "DECIMAL",
+    String: "STRING",
 };
 
 /**
  * Manage communication with a Arduino RaspberryPiPico peripheral over a OpenBlock Link client socket.
  */
-class ArduinoRaspberryPiPico extends CommonPeripheral{
+class ArduinoRaspberryPiPico extends CommonPeripheral {
     /**
      * Construct a Arduino communication object.
      * @param {Runtime} runtime - the OpenBlock runtime
      * @param {string} deviceId - the id of the extension
      * @param {string} originalDeviceId - the original id of the peripheral, like xxx_arduinoUno
      */
-    constructor (runtime, deviceId, originalDeviceId) {
-        super(runtime, deviceId, originalDeviceId, PNPID_LIST, SERIAL_CONFIG, DIVECE_OPT);
+    constructor(runtime, deviceId, originalDeviceId) {
+        super(
+            runtime,
+            deviceId,
+            originalDeviceId,
+            PNPID_LIST,
+            SERIAL_CONFIG,
+            DIVECE_OPT
+        );
     }
 }
 
@@ -144,103 +151,103 @@ class OpenBlockArduinoRaspberryPiPicoDevice {
     /**
      * @return {string} - the ID of this extensGPn.
      */
-    get DEVICE_ID () {
-        return 'arduinoRaspberryPiPico';
+    get DEVICE_ID() {
+        return "arduinoRaspberryPiPico";
     }
 
-    get PINS_MENU () {
+    get PINS_MENU() {
         return [
             {
-                text: 'GP0',
-                value: Pins.GP0
+                text: "GP0",
+                value: Pins.GP0,
             },
             {
-                text: 'GP1',
-                value: Pins.GP1
+                text: "GP1",
+                value: Pins.GP1,
             },
             {
-                text: 'GP2',
-                value: Pins.GP2
+                text: "GP2",
+                value: Pins.GP2,
             },
             {
-                text: 'GP3',
-                value: Pins.GP3
+                text: "GP3",
+                value: Pins.GP3,
             },
             {
-                text: 'GP4',
-                value: Pins.GP4
+                text: "GP4",
+                value: Pins.GP4,
             },
             {
-                text: 'GP5',
-                value: Pins.GP5
+                text: "GP5",
+                value: Pins.GP5,
             },
             {
-                text: 'GP6',
-                value: Pins.GP6
+                text: "GP6",
+                value: Pins.GP6,
             },
             {
-                text: 'GP7',
-                value: Pins.GP7
+                text: "GP7",
+                value: Pins.GP7,
             },
             {
-                text: 'GP8',
-                value: Pins.GP8
+                text: "GP8",
+                value: Pins.GP8,
             },
             {
-                text: 'GP9',
-                value: Pins.GP9
+                text: "GP9",
+                value: Pins.GP9,
             },
             {
-                text: 'GP10',
-                value: Pins.GP10
+                text: "GP10",
+                value: Pins.GP10,
             },
             {
-                text: 'GP11',
-                value: Pins.GP11
+                text: "GP11",
+                value: Pins.GP11,
             },
             {
-                text: 'GP12',
-                value: Pins.GP12
+                text: "GP12",
+                value: Pins.GP12,
             },
             {
-                text: 'GP13',
-                value: Pins.GP13
+                text: "GP13",
+                value: Pins.GP13,
             },
             {
-                text: 'GP14',
-                value: Pins.GP14
+                text: "GP14",
+                value: Pins.GP14,
             },
             {
-                text: 'GP15',
-                value: Pins.GP15
+                text: "GP15",
+                value: Pins.GP15,
             },
             {
-                text: 'GP16',
-                value: Pins.GP16
+                text: "GP16",
+                value: Pins.GP16,
             },
             {
-                text: 'GP17',
-                value: Pins.GP17
+                text: "GP17",
+                value: Pins.GP17,
             },
             {
-                text: 'GP18',
-                value: Pins.GP18
+                text: "GP18",
+                value: Pins.GP18,
             },
             {
-                text: 'GP19',
-                value: Pins.GP19
+                text: "GP19",
+                value: Pins.GP19,
             },
             {
-                text: 'GP20',
-                value: Pins.GP20
+                text: "GP20",
+                value: Pins.GP20,
             },
             {
-                text: 'GP21',
-                value: Pins.GP21
+                text: "GP21",
+                value: Pins.GP21,
             },
             {
-                text: 'GP22',
-                value: Pins.GP22
+                text: "GP22",
+                value: Pins.GP22,
             },
             // {
             //     text: 'GP23',
@@ -251,253 +258,253 @@ class OpenBlockArduinoRaspberryPiPicoDevice {
             //     value: Pins.GP24
             // },
             {
-                text: 'LED',
-                value: Pins.GP25
+                text: "LED",
+                value: Pins.GP25,
             },
             {
-                text: 'GP26',
-                value: Pins.GP26
+                text: "GP26",
+                value: Pins.GP26,
             },
             {
-                text: 'GP27',
-                value: Pins.GP27
+                text: "GP27",
+                value: Pins.GP27,
             },
             {
-                text: 'GP28',
-                value: Pins.GP28
-            }
+                text: "GP28",
+                value: Pins.GP28,
+            },
         ];
     }
 
-    get DEFAULT_PIN () {
+    get DEFAULT_PIN() {
         return Pins.GP0;
     }
 
-    get MODE_MENU () {
+    get MODE_MENU() {
         return [
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.modeMenu.input',
-                    default: 'input',
-                    description: 'label for input pin mode'
+                    id: "arduinoRaspberryPiPico.modeMenu.input",
+                    default: "input",
+                    description: "label for input pin mode",
                 }),
-                value: Mode.Input
+                value: Mode.Input,
             },
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.modeMenu.output',
-                    default: 'output',
-                    description: 'label for output pin mode'
+                    id: "arduinoRaspberryPiPico.modeMenu.output",
+                    default: "output",
+                    description: "label for output pin mode",
                 }),
-                value: Mode.Output
+                value: Mode.Output,
             },
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.modeMenu.inputPullup',
-                    default: 'input-pullup',
-                    description: 'label for input-pullup pin mode'
+                    id: "arduinoRaspberryPiPico.modeMenu.inputPullup",
+                    default: "input-pullup",
+                    description: "label for input-pullup pin mode",
                 }),
-                value: Mode.InputPullup
+                value: Mode.InputPullup,
             },
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.modeMenu.inputPulldown',
-                    default: 'input-pulldown',
-                    description: 'label for input-pulldown pin mode'
+                    id: "arduinoRaspberryPiPico.modeMenu.inputPulldown",
+                    default: "input-pulldown",
+                    description: "label for input-pulldown pin mode",
                 }),
-                value: Mode.InputPulldown
-            }
+                value: Mode.InputPulldown,
+            },
         ];
     }
 
-    get LEVEL_MENU () {
+    get LEVEL_MENU() {
         return [
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.levelMenu.high',
-                    default: 'high',
-                    description: 'label for high level'
+                    id: "arduinoRaspberryPiPico.levelMenu.high",
+                    default: "high",
+                    description: "label for high level",
                 }),
-                value: Level.High
+                value: Level.High,
             },
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.levelMenu.low',
-                    default: 'low',
-                    description: 'label for low level'
+                    id: "arduinoRaspberryPiPico.levelMenu.low",
+                    default: "low",
+                    description: "label for low level",
                 }),
-                value: Level.Low
-            }
+                value: Level.Low,
+            },
         ];
     }
 
-    get ANALOG_PINS_MENU () {
+    get ANALOG_PINS_MENU() {
         return [
             {
-                text: 'GP26',
-                value: Pins.GP26
+                text: "GP26",
+                value: Pins.GP26,
             },
             {
-                text: 'GP27',
-                value: Pins.GP27
+                text: "GP27",
+                value: Pins.GP27,
             },
             {
-                text: 'GP28',
-                value: Pins.GP28
-            }
+                text: "GP28",
+                value: Pins.GP28,
+            },
         ];
     }
 
-    get INTERRUP_MODE_MENU () {
+    get INTERRUP_MODE_MENU() {
         return [
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.InterrupModeMenu.risingEdge',
-                    default: 'rising edge',
-                    description: 'label for rising edge interrup'
+                    id: "arduinoRaspberryPiPico.InterrupModeMenu.risingEdge",
+                    default: "rising edge",
+                    description: "label for rising edge interrup",
                 }),
-                value: InterrupMode.Rising
+                value: InterrupMode.Rising,
             },
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.InterrupModeMenu.fallingEdge',
-                    default: 'falling edge',
-                    description: 'label for falling edge interrup'
+                    id: "arduinoRaspberryPiPico.InterrupModeMenu.fallingEdge",
+                    default: "falling edge",
+                    description: "label for falling edge interrup",
                 }),
-                value: InterrupMode.Falling
+                value: InterrupMode.Falling,
             },
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.InterrupModeMenu.changeEdge',
-                    default: 'change edge',
-                    description: 'label for change edge interrup'
+                    id: "arduinoRaspberryPiPico.InterrupModeMenu.changeEdge",
+                    default: "change edge",
+                    description: "label for change edge interrup",
                 }),
-                value: InterrupMode.Change
+                value: InterrupMode.Change,
             },
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.InterrupModeMenu.low',
-                    default: 'low level',
-                    description: 'label for low level interrup'
+                    id: "arduinoRaspberryPiPico.InterrupModeMenu.low",
+                    default: "low level",
+                    description: "label for low level interrup",
                 }),
-                value: InterrupMode.LowLevel
+                value: InterrupMode.LowLevel,
             },
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.InterrupModeMenu.high',
-                    default: 'high level',
-                    description: 'label for high level interrup'
+                    id: "arduinoRaspberryPiPico.InterrupModeMenu.high",
+                    default: "high level",
+                    description: "label for high level interrup",
                 }),
-                value: InterrupMode.HighLevel
-            }
+                value: InterrupMode.HighLevel,
+            },
         ];
     }
 
-    get SERIAL_NO_MENU () {
+    get SERIAL_NO_MENU() {
         return [
             {
-                text: 'USB',
-                value: SerialNo.USB
+                text: "USB",
+                value: SerialNo.USB,
             },
             {
-                text: '1',
-                value: SerialNo.Serial1
+                text: "1",
+                value: SerialNo.Serial1,
             },
             {
-                text: '2',
-                value: SerialNo.Serial2
-            }
+                text: "2",
+                value: SerialNo.Serial2,
+            },
         ];
     }
 
-    get DEFAULT_SERIAL_RX_PIN () {
+    get DEFAULT_SERIAL_RX_PIN() {
         return Pins.GP1;
     }
 
-    get DEFAULT_SERIAL_TX_PIN () {
+    get DEFAULT_SERIAL_TX_PIN() {
         return Pins.GP0;
     }
 
-    get BAUDTATE_MENU () {
+    get BAUDTATE_MENU() {
         return [
             {
-                text: '4800',
-                value: Buadrate.B4800
+                text: "4800",
+                value: Buadrate.B4800,
             },
             {
-                text: '9600',
-                value: Buadrate.B9600
+                text: "9600",
+                value: Buadrate.B9600,
             },
             {
-                text: '19200',
-                value: Buadrate.B19200
+                text: "19200",
+                value: Buadrate.B19200,
             },
             {
-                text: '38400',
-                value: Buadrate.B38400
+                text: "38400",
+                value: Buadrate.B38400,
             },
             {
-                text: '57600',
-                value: Buadrate.B57600
+                text: "57600",
+                value: Buadrate.B57600,
             },
             {
-                text: '76800',
-                value: Buadrate.B76800
+                text: "76800",
+                value: Buadrate.B76800,
             },
             {
-                text: '115200',
-                value: Buadrate.B115200
-            }
+                text: "115200",
+                value: Buadrate.B115200,
+            },
         ];
     }
 
-    get EOL_MENU () {
+    get EOL_MENU() {
         return [
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.eolMenu.warp',
-                    default: 'warp',
-                    description: 'label for warp print'
+                    id: "arduinoRaspberryPiPico.eolMenu.warp",
+                    default: "warp",
+                    description: "label for warp print",
                 }),
-                value: Eol.Warp
+                value: Eol.Warp,
             },
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.eolMenu.noWarp',
-                    default: 'no-warp',
-                    description: 'label for no warp print'
+                    id: "arduinoRaspberryPiPico.eolMenu.noWarp",
+                    default: "no-warp",
+                    description: "label for no warp print",
                 }),
-                value: Eol.NoWarp
-            }
+                value: Eol.NoWarp,
+            },
         ];
     }
 
-    get DATA_TYPE_MENU () {
+    get DATA_TYPE_MENU() {
         return [
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.dataTypeMenu.integer',
-                    default: 'integer',
-                    description: 'label for integer'
+                    id: "arduinoRaspberryPiPico.dataTypeMenu.integer",
+                    default: "integer",
+                    description: "label for integer",
                 }),
-                value: DataType.Integer
+                value: DataType.Integer,
             },
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.dataTypeMenu.decimal',
-                    default: 'decimal',
-                    description: 'label for decimal number'
+                    id: "arduinoRaspberryPiPico.dataTypeMenu.decimal",
+                    default: "decimal",
+                    description: "label for decimal number",
                 }),
-                value: DataType.Decimal
+                value: DataType.Decimal,
             },
             {
                 text: formatMessage({
-                    id: 'arduinoRaspberryPiPico.dataTypeMenu.string',
-                    default: 'string',
-                    description: 'label for string'
+                    id: "arduinoRaspberryPiPico.dataTypeMenu.string",
+                    default: "string",
+                    description: "label for string",
                 }),
-                value: DataType.String
-            }
+                value: DataType.String,
+            },
         ];
     }
 
@@ -506,7 +513,7 @@ class OpenBlockArduinoRaspberryPiPicoDevice {
      * @param {Runtime} runtime - the OpenBlock runtime.
      * @param {string} originalDeviceId - the original id of the peripheral, like xxx_arduinoUno
      */
-    constructor (runtime, originalDeviceId) {
+    constructor(runtime, originalDeviceId) {
         /**
          * The OpenBlock runtime.
          * @type {Runtime}
@@ -514,441 +521,461 @@ class OpenBlockArduinoRaspberryPiPicoDevice {
         this.runtime = runtime;
 
         // Create a new Arduino RaspberryPiPico peripheral instance
-        this._peripheral = new ArduinoRaspberryPiPico(this.runtime, this.DEVICE_ID, originalDeviceId);
+        this._peripheral = new ArduinoRaspberryPiPico(
+            this.runtime,
+            this.DEVICE_ID,
+            originalDeviceId
+        );
     }
 
     /**
      * @returns {Array.<object>} metadata for this extension and its blocks.
      */
-    getInfo () {
+    getInfo() {
         return [
             {
-                id: 'pin',
+                id: "pin",
                 name: formatMessage({
-                    id: 'arduinoRaspberryPiPico.category.pins',
-                    default: 'Pins',
-                    description: 'The name of the arduino RaspberryPiPico device pin category'
+                    id: "arduinoRaspberryPiPico.category.pins",
+                    default: "Pins",
+                    description:
+                        "The name of the arduino RaspberryPiPico device pin category",
                 }),
-                color1: '#4C97FF',
-                color2: '#3373CC',
-                color3: '#3373CC',
+                color1: "#4C97FF",
+                color2: "#3373CC",
+                color3: "#3373CC",
 
                 blocks: [
                     {
-                        opcode: 'setPinMode',
+                        opcode: "setPinMode",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.pins.setPinMode',
-                            default: 'set pin [PIN] mode [MODE]',
-                            description: 'arduinoRaspberryPiPico set pin mode'
+                            id: "arduinoRaspberryPiPico.pins.setPinMode",
+                            default: "set pin [PIN] mode [MODE]",
+                            description: "arduinoRaspberryPiPico set pin mode",
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: this.DEFAULT_PIN
+                                menu: "pins",
+                                defaultValue: this.DEFAULT_PIN,
                             },
                             MODE: {
                                 type: ArgumentType.STRING,
-                                menu: 'mode',
-                                defaultValue: Mode.Input
-                            }
-                        }
+                                menu: "mode",
+                                defaultValue: Mode.Input,
+                            },
+                        },
                     },
                     {
-                        opcode: 'setDigitalOutput',
+                        opcode: "setDigitalOutput",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.pins.setDigitalOutput',
-                            default: 'set digital pin [PIN] out [LEVEL]',
-                            description: 'arduinoRaspberryPiPico set digital pin out'
+                            id: "arduinoRaspberryPiPico.pins.setDigitalOutput",
+                            default: "set digital pin [PIN] out [LEVEL]",
+                            description:
+                                "arduinoRaspberryPiPico set digital pin out",
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: this.DEFAULT_PIN
+                                menu: "pins",
+                                defaultValue: this.DEFAULT_PIN,
                             },
                             LEVEL: {
                                 type: ArgumentType.STRING,
-                                menu: 'level',
-                                defaultValue: Level.High
-                            }
-                        }
+                                menu: "level",
+                                defaultValue: Level.High,
+                            },
+                        },
                     },
                     {
-
-                        opcode: 'setPwmOutput',
+                        opcode: "setPwmOutput",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.pins.setPwmOutput',
-                            default: 'set pwm pin [PIN] out [OUT]',
-                            description: 'arduinoRaspberryPiPico set pwm pin out'
+                            id: "arduinoRaspberryPiPico.pins.setPwmOutput",
+                            default: "set pwm pin [PIN] out [OUT]",
+                            description:
+                                "arduinoRaspberryPiPico set pwm pin out",
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: this.DEFAULT_PIN
+                                menu: "pins",
+                                defaultValue: this.DEFAULT_PIN,
                             },
                             OUT: {
                                 type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: '255'
-                            }
-                        }
+                                defaultValue: "255",
+                            },
+                        },
                     },
-                    '---',
+                    "---",
                     {
-                        opcode: 'readDigitalPin',
+                        opcode: "readDigitalPin",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.pins.readDigitalPin',
-                            default: 'read digital pin [PIN]',
-                            description: 'arduinoRaspberryPiPico read digital pin'
+                            id: "arduinoRaspberryPiPico.pins.readDigitalPin",
+                            default: "read digital pin [PIN]",
+                            description:
+                                "arduinoRaspberryPiPico read digital pin",
                         }),
                         blockType: BlockType.BOOLEAN,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: this.DEFAULT_PIN
-                            }
-                        }
+                                menu: "pins",
+                                defaultValue: this.DEFAULT_PIN,
+                            },
+                        },
                     },
                     {
-                        opcode: 'readAnalogPin',
+                        opcode: "readAnalogPin",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.pins.readAnalogPin',
-                            default: 'read analog pin [PIN]',
-                            description: 'arduinoRaspberryPiPico read analog pin'
+                            id: "arduinoRaspberryPiPico.pins.readAnalogPin",
+                            default: "read analog pin [PIN]",
+                            description:
+                                "arduinoRaspberryPiPico read analog pin",
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
-                                menu: 'analogPins',
-                                defaultValue: Pins.GP26
-                            }
-                        }
+                                menu: "analogPins",
+                                defaultValue: Pins.GP26,
+                            },
+                        },
                     },
-                    '---',
+                    "---",
                     {
-
-                        opcode: 'setServoOutput',
+                        opcode: "setServoOutput",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.pins.setServoOutput',
-                            default: 'set servo pin [PIN] out [OUT]',
-                            description: 'arduinoRaspberryPiPico set servo pin out'
+                            id: "arduinoRaspberryPiPico.pins.setServoOutput",
+                            default: "set servo pin [PIN] out [OUT]",
+                            description:
+                                "arduinoRaspberryPiPico set servo pin out",
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: this.DEFAULT_PIN
+                                menu: "pins",
+                                defaultValue: this.DEFAULT_PIN,
                             },
                             OUT: {
                                 type: ArgumentType.HALF_ANGLE,
-                                defaultValue: '90'
-                            }
-                        }
+                                defaultValue: "90",
+                            },
+                        },
                     },
-                    '---',
+                    "---",
                     {
-
-                        opcode: 'attachInterrupt',
+                        opcode: "attachInterrupt",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.pins.attachInterrupt',
-                            default: 'attach interrupt pin [PIN] mode [MODE] executes',
-                            description: 'arduinoRaspberryPiPico attach interrupt'
+                            id: "arduinoRaspberryPiPico.pins.attachInterrupt",
+                            default:
+                                "attach interrupt pin [PIN] mode [MODE] executes",
+                            description:
+                                "arduinoRaspberryPiPico attach interrupt",
                         }),
                         blockType: BlockType.CONDITIONAL,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: this.DEFAULT_PIN
+                                menu: "pins",
+                                defaultValue: this.DEFAULT_PIN,
                             },
                             MODE: {
                                 type: ArgumentType.STRING,
-                                menu: 'interruptMode',
-                                defaultValue: InterrupMode.Rising
-                            }
+                                menu: "interruptMode",
+                                defaultValue: InterrupMode.Rising,
+                            },
                         },
-                        programMode: [ProgramModeType.UPLOAD]
+                        programMode: [ProgramModeType.UPLOAD],
                     },
                     {
-
-                        opcode: 'detachInterrupt',
+                        opcode: "detachInterrupt",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.pins.detachInterrupt',
-                            default: 'detach interrupt pin [PIN]',
-                            description: 'arduinoRaspberryPiPico detach interrupt'
+                            id: "arduinoRaspberryPiPico.pins.detachInterrupt",
+                            default: "detach interrupt pin [PIN]",
+                            description:
+                                "arduinoRaspberryPiPico detach interrupt",
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: this.DEFAULT_PIN
-                            }
+                                menu: "pins",
+                                defaultValue: this.DEFAULT_PIN,
+                            },
                         },
-                        programMode: [ProgramModeType.UPLOAD]
-                    }
+                        programMode: [ProgramModeType.UPLOAD],
+                    },
                 ],
                 menus: {
                     pins: {
-                        items: this.PINS_MENU
+                        items: this.PINS_MENU,
                     },
                     mode: {
-                        items: this.MODE_MENU
+                        items: this.MODE_MENU,
                     },
                     analogPins: {
-                        items: this.ANALOG_PINS_MENU
+                        items: this.ANALOG_PINS_MENU,
                     },
                     level: {
                         acceptReporters: true,
-                        items: this.LEVEL_MENU
+                        items: this.LEVEL_MENU,
                     },
                     interruptMode: {
-                        items: this.INTERRUP_MODE_MENU
-                    }
-                }
+                        items: this.INTERRUP_MODE_MENU,
+                    },
+                },
             },
             {
-                id: 'serial',
+                id: "serial",
                 name: formatMessage({
-                    id: 'arduinoRaspberryPiPico.category.serial',
-                    default: 'Serial',
-                    description: 'The name of the arduino RaspberryPiPico device serial category'
+                    id: "arduinoRaspberryPiPico.category.serial",
+                    default: "Serial",
+                    description:
+                        "The name of the arduino RaspberryPiPico device serial category",
                 }),
-                color1: '#9966FF',
-                color2: '#774DCB',
-                color3: '#774DCB',
+                color1: "#9966FF",
+                color2: "#774DCB",
+                color3: "#774DCB",
 
                 blocks: [
                     {
-                        opcode: 'raspberryPiPicoMultiSerialBegin',
+                        opcode: "raspberryPiPicoMultiSerialBegin",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.serial.raspberryPiPicoMultiSerialBegin',
-                            default: 'serial [NO] begin baudrate [VALUE]',
-                            description: 'arduinoRaspberryPiPico multi serial begin'
+                            id: "arduinoRaspberryPiPico.serial.raspberryPiPicoMultiSerialBegin",
+                            default: "serial [NO] begin baudrate [VALUE]",
+                            description:
+                                "arduinoRaspberryPiPico multi serial begin",
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
                             NO: {
                                 type: ArgumentType.NUMBER,
-                                menu: 'serialNo',
-                                defaultValue: SerialNo.USB
+                                menu: "serialNo",
+                                defaultValue: SerialNo.USB,
                             },
                             VALUE: {
                                 type: ArgumentType.STRING,
-                                menu: 'baudrate',
-                                defaultValue: Buadrate.B9600
-                            }
+                                menu: "baudrate",
+                                defaultValue: Buadrate.B9600,
+                            },
                         },
-                        programMode: [ProgramModeType.UPLOAD]
+                        programMode: [ProgramModeType.UPLOAD],
                     },
                     {
-                        opcode: 'multiSerialPrint',
+                        opcode: "multiSerialPrint",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.serial.multiSerialPrint',
-                            default: 'serial [NO] print [VALUE] [EOL]',
-                            description: 'arduinoRaspberryPiPico multi serial print'
+                            id: "arduinoRaspberryPiPico.serial.multiSerialPrint",
+                            default: "serial [NO] print [VALUE] [EOL]",
+                            description:
+                                "arduinoRaspberryPiPico multi serial print",
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
                             NO: {
                                 type: ArgumentType.NUMBER,
-                                menu: 'serialNo',
-                                defaultValue: SerialNo.USB
+                                menu: "serialNo",
+                                defaultValue: SerialNo.USB,
                             },
                             VALUE: {
                                 type: ArgumentType.STRING,
-                                defaultValue: 'Hello OpenBlock'
+                                defaultValue: "Hello Nomokit",
                             },
                             EOL: {
                                 type: ArgumentType.STRING,
-                                menu: 'eol',
-                                defaultValue: Eol.Warp
-                            }
+                                menu: "eol",
+                                defaultValue: Eol.Warp,
+                            },
                         },
-                        programMode: [ProgramModeType.UPLOAD]
+                        programMode: [ProgramModeType.UPLOAD],
                     },
                     {
-                        opcode: 'multiSerialAvailable',
+                        opcode: "multiSerialAvailable",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.serial.multiSerialAvailable',
-                            default: 'serial [NO] available data length',
-                            description: 'arduinoRaspberryPiPico multi serial available data length'
+                            id: "arduinoRaspberryPiPico.serial.multiSerialAvailable",
+                            default: "serial [NO] available data length",
+                            description:
+                                "arduinoRaspberryPiPico multi serial available data length",
                         }),
                         arguments: {
                             NO: {
                                 type: ArgumentType.NUMBER,
-                                menu: 'serialNo',
-                                defaultValue: SerialNo.USB
-                            }
+                                menu: "serialNo",
+                                defaultValue: SerialNo.USB,
+                            },
                         },
                         blockType: BlockType.REPORTER,
-                        programMode: [ProgramModeType.UPLOAD]
+                        programMode: [ProgramModeType.UPLOAD],
                     },
                     {
-                        opcode: 'multiSerialReadAByte',
+                        opcode: "multiSerialReadAByte",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.serial.multiSerialReadAByte',
-                            default: 'serial [NO] read a byte',
-                            description: 'arduinoRaspberryPiPico multi serial read a byte'
+                            id: "arduinoRaspberryPiPico.serial.multiSerialReadAByte",
+                            default: "serial [NO] read a byte",
+                            description:
+                                "arduinoRaspberryPiPico multi serial read a byte",
                         }),
                         arguments: {
                             NO: {
                                 type: ArgumentType.NUMBER,
-                                menu: 'serialNo',
-                                defaultValue: SerialNo.USB
-                            }
+                                menu: "serialNo",
+                                defaultValue: SerialNo.USB,
+                            },
                         },
                         blockType: BlockType.REPORTER,
-                        programMode: [ProgramModeType.UPLOAD]
-                    }
+                        programMode: [ProgramModeType.UPLOAD],
+                    },
                 ],
                 menus: {
                     baudrate: {
-                        items: this.BAUDTATE_MENU
+                        items: this.BAUDTATE_MENU,
                     },
                     serialNo: {
-                        items: this.SERIAL_NO_MENU
+                        items: this.SERIAL_NO_MENU,
                     },
                     eol: {
-                        items: this.EOL_MENU
-                    }
-                }
+                        items: this.EOL_MENU,
+                    },
+                },
             },
             {
-                id: 'data',
+                id: "data",
                 name: formatMessage({
-                    id: 'arduinoRaspberryPiPico.category.data',
-                    default: 'Data',
-                    description: 'The name of the arduino RaspberryPiPico device data category'
+                    id: "arduinoRaspberryPiPico.category.data",
+                    default: "Data",
+                    description:
+                        "The name of the arduino RaspberryPiPico device data category",
                 }),
-                color1: '#CF63CF',
-                color2: '#C94FC9',
-                color3: '#BD42BD',
+                color1: "#CF63CF",
+                color2: "#C94FC9",
+                color3: "#BD42BD",
                 blocks: [
                     {
-                        opcode: 'dataMap',
+                        opcode: "dataMap",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.data.dataMap',
-                            default: 'map [DATA] from ([ARG0], [ARG1]) to ([ARG2], [ARG3])',
-                            description: 'arduinoRaspberryPiPico data map'
+                            id: "arduinoRaspberryPiPico.data.dataMap",
+                            default:
+                                "map [DATA] from ([ARG0], [ARG1]) to ([ARG2], [ARG3])",
+                            description: "arduinoRaspberryPiPico data map",
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
                             DATA: {
                                 type: ArgumentType.NUMBER,
-                                defaultValue: '50'
+                                defaultValue: "50",
                             },
                             ARG0: {
                                 type: ArgumentType.NUMBER,
-                                defaultValue: '1'
+                                defaultValue: "1",
                             },
                             ARG1: {
                                 type: ArgumentType.NUMBER,
-                                defaultValue: '100'
+                                defaultValue: "100",
                             },
                             ARG2: {
                                 type: ArgumentType.NUMBER,
-                                defaultValue: '1'
+                                defaultValue: "1",
                             },
                             ARG3: {
                                 type: ArgumentType.NUMBER,
-                                defaultValue: '1000'
-                            }
+                                defaultValue: "1000",
+                            },
                         },
-                        programMode: [ProgramModeType.UPLOAD]
+                        programMode: [ProgramModeType.UPLOAD],
                     },
                     {
-                        opcode: 'dataConstrain',
+                        opcode: "dataConstrain",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.data.dataConstrain',
-                            default: 'constrain [DATA] between ([ARG0], [ARG1])',
-                            description: 'arduinoRaspberryPiPico data constrain'
+                            id: "arduinoRaspberryPiPico.data.dataConstrain",
+                            default:
+                                "constrain [DATA] between ([ARG0], [ARG1])",
+                            description:
+                                "arduinoRaspberryPiPico data constrain",
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
                             DATA: {
                                 type: ArgumentType.NUMBER,
-                                defaultValue: '50'
+                                defaultValue: "50",
                             },
                             ARG0: {
                                 type: ArgumentType.NUMBER,
-                                defaultValue: '1'
+                                defaultValue: "1",
                             },
                             ARG1: {
                                 type: ArgumentType.NUMBER,
-                                defaultValue: '100'
-                            }
+                                defaultValue: "100",
+                            },
                         },
-                        programMode: [ProgramModeType.UPLOAD]
+                        programMode: [ProgramModeType.UPLOAD],
                     },
-                    '---',
+                    "---",
                     {
-                        opcode: 'dataConvert',
+                        opcode: "dataConvert",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.data.dataConvert',
-                            default: 'convert [DATA] to [TYPE]',
-                            description: 'arduinoRaspberryPiPico data convert'
+                            id: "arduinoRaspberryPiPico.data.dataConvert",
+                            default: "convert [DATA] to [TYPE]",
+                            description: "arduinoRaspberryPiPico data convert",
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
                             DATA: {
                                 type: ArgumentType.STRING,
-                                defaultValue: '123'
+                                defaultValue: "123",
                             },
                             TYPE: {
                                 type: ArgumentType.STRING,
-                                menu: 'dataType',
-                                defaultValue: DataType.Integer
-                            }
+                                menu: "dataType",
+                                defaultValue: DataType.Integer,
+                            },
                         },
-                        programMode: [ProgramModeType.UPLOAD]
+                        programMode: [ProgramModeType.UPLOAD],
                     },
                     {
-                        opcode: 'dataConvertASCIICharacter',
+                        opcode: "dataConvertASCIICharacter",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.data.dataConvertASCIICharacter',
-                            default: 'convert [DATA] to ASCII character',
-                            description: 'arduinoRaspberryPiPico data convert to ASCII character'
+                            id: "arduinoRaspberryPiPico.data.dataConvertASCIICharacter",
+                            default: "convert [DATA] to ASCII character",
+                            description:
+                                "arduinoRaspberryPiPico data convert to ASCII character",
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
                             DATA: {
                                 type: ArgumentType.NUMBER,
-                                defaultValue: '97'
-                            }
+                                defaultValue: "97",
+                            },
                         },
-                        programMode: [ProgramModeType.UPLOAD]
+                        programMode: [ProgramModeType.UPLOAD],
                     },
                     {
-                        opcode: 'dataConvertASCIINumber',
+                        opcode: "dataConvertASCIINumber",
                         text: formatMessage({
-                            id: 'arduinoRaspberryPiPico.data.dataConvertASCIINumber',
-                            default: 'convert [DATA] to ASCII nubmer',
-                            description: 'arduinoRaspberryPiPico data convert to ASCII nubmer'
+                            id: "arduinoRaspberryPiPico.data.dataConvertASCIINumber",
+                            default: "convert [DATA] to ASCII nubmer",
+                            description:
+                                "arduinoRaspberryPiPico data convert to ASCII nubmer",
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
                             DATA: {
                                 type: ArgumentType.STRING,
-                                defaultValue: 'a'
-                            }
+                                defaultValue: "a",
+                            },
                         },
-                        programMode: [ProgramModeType.UPLOAD]
-                    }
+                        programMode: [ProgramModeType.UPLOAD],
+                    },
                 ],
                 menus: {
                     dataType: {
-                        items: this.DATA_TYPE_MENU
-                    }
-                }
-            }
+                        items: this.DATA_TYPE_MENU,
+                    },
+                },
+            },
         ];
     }
 
@@ -957,7 +984,7 @@ class OpenBlockArduinoRaspberryPiPicoDevice {
      * @param {object} args - the block's arguments.
      * @return {Promise} - a Promise that resolves after the set pin mode is done.
      */
-    setPinMode (args) {
+    setPinMode(args) {
         this._peripheral.setPinMode(args.PIN, args.MODE);
         return Promise.resolve();
     }
@@ -967,7 +994,7 @@ class OpenBlockArduinoRaspberryPiPicoDevice {
      * @param {object} args - the block's arguments.
      * @return {Promise} - a Promise that resolves after the set pin digital out level is done.
      */
-    setDigitalOutput (args) {
+    setDigitalOutput(args) {
         this._peripheral.setDigitalOutput(args.PIN, args.LEVEL);
         return Promise.resolve();
     }
@@ -977,7 +1004,7 @@ class OpenBlockArduinoRaspberryPiPicoDevice {
      * @param {object} args - the block's arguments.
      * @return {Promise} - a Promise that resolves after the set pin pwm out value is done.
      */
-    setPwmOutput (args) {
+    setPwmOutput(args) {
         this._peripheral.setPwmOutput(args.PIN, args.OUT);
         return Promise.resolve();
     }
@@ -987,7 +1014,7 @@ class OpenBlockArduinoRaspberryPiPicoDevice {
      * @param {object} args - the block's arguments.
      * @return {boolean} - true if read high level, false if read low level.
      */
-    readDigitalPin (args) {
+    readDigitalPin(args) {
         return this._peripheral.readDigitalPin(args.PIN);
     }
 
@@ -996,7 +1023,7 @@ class OpenBlockArduinoRaspberryPiPicoDevice {
      * @param {object} args - the block's arguments.
      * @return {number} - analog value fo the pin.
      */
-    readAnalogPin (args) {
+    readAnalogPin(args) {
         return this._peripheral.readAnalogPin(args.PIN);
     }
 
@@ -1005,7 +1032,7 @@ class OpenBlockArduinoRaspberryPiPicoDevice {
      * @param {object} args - the block's arguments.
      * @return {Promise} - a Promise that resolves after the set servo out value is done.
      */
-    setServoOutput (args) {
+    setServoOutput(args) {
         this._peripheral.setServoOutput(args.PIN, args.OUT);
         return Promise.resolve();
     }
