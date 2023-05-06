@@ -31,7 +31,7 @@ const SERIAL_CONFIG = {
  */
 const DIVECE_OPT = {
     type: "arduino",
-    fqbn: "arduino:mbed:nano33ble",
+    fqbn: "arduino:mbed_nano:nano33ble",
 };
 
 const Pins = {
