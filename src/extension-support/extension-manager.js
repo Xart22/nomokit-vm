@@ -46,6 +46,9 @@ const builtinDevices = {
         require("../devices/arduinoMega2560/arduinoMega2560"),
     // Esp32
     arduinoEsp32: () => require("../devices/arduinoEsp32/arduinoEsp32"),
+    arduinoEsp32Cam: () => require("../devices/arduinoEsp32/arduinoEsp32Cam"),
+    arduinoNano33BleSense: () =>
+        require("../devices/arduinoNano33Ble/arduinoNano33Ble"),
     // Esp8266
     arduinoEsp8266: () => require("../devices/arduinoEsp8266/arduinoEsp8266"),
     arduinoEsp8266NodeMCU: () =>
