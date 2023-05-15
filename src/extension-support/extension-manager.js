@@ -9,7 +9,7 @@ const maybeFormatMessage = require("../util/maybe-format-message");
 const BlockType = require("./block-type");
 
 // Local resources server address
-const localResourcesServerUrl = "https://nomobase.nomo-kit.com/";
+const localResourcesServerUrl = "https://nomopro.nomo-kit.com/";
 
 // These extensions are currently built into the VM repository but should not be loaded at startup.
 // TODO: move these out into a separate repository?
@@ -46,6 +46,9 @@ const builtinDevices = {
         require("../devices/arduinoMega2560/arduinoMega2560"),
     // Esp32
     arduinoEsp32: () => require("../devices/arduinoEsp32/arduinoEsp32"),
+    arduinoEsp32Cam: () => require("../devices/arduinoEsp32/arduinoEsp32Cam"),
+    arduinoNano33BleSense: () =>
+        require("../devices/arduinoNano33Ble/arduinoNano33Ble"),
     // Esp8266
     arduinoEsp8266: () => require("../devices/arduinoEsp8266/arduinoEsp8266"),
     arduinoEsp8266NodeMCU: () =>
@@ -404,7 +407,6 @@ class ExtensionManager {
      * @returns {Promise} resolved once the device extension is loaded or rejected on failure
      */
     loadDeviceExtension(deviceExtensionId) {
-
         return new Promise((resolve, reject) => {
             const deviceExtension = this._deviceExtensions.find(
                 (ext) => ext.extensionId === deviceExtensionId
@@ -458,12 +460,12 @@ class ExtensionManager {
                     );
                     return resolve();
                 })
-                .catch((err) =>{
+                .catch((err) => {
                     console.log(err);
                     reject(
                         `Error while load device extension ` +
                             `${deviceExtension.extensionId}'s js file: ${err}`
-                    )
+                    );
                 });
         });
     }
