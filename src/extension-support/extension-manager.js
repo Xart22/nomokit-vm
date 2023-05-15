@@ -9,7 +9,7 @@ const maybeFormatMessage = require("../util/maybe-format-message");
 const BlockType = require("./block-type");
 
 // Local resources server address
-const localResourcesServerUrl = "https://nomobase.nomo-kit.com/";
+const localResourcesServerUrl = "https://nomopro.nomo-kit.com/";
 
 // These extensions are currently built into the VM repository but should not be loaded at startup.
 // TODO: move these out into a separate repository?
@@ -404,7 +404,6 @@ class ExtensionManager {
      * @returns {Promise} resolved once the device extension is loaded or rejected on failure
      */
     loadDeviceExtension(deviceExtensionId) {
-
         return new Promise((resolve, reject) => {
             const deviceExtension = this._deviceExtensions.find(
                 (ext) => ext.extensionId === deviceExtensionId
@@ -458,12 +457,12 @@ class ExtensionManager {
                     );
                     return resolve();
                 })
-                .catch((err) =>{
+                .catch((err) => {
                     console.log(err);
                     reject(
                         `Error while load device extension ` +
                             `${deviceExtension.extensionId}'s js file: ${err}`
-                    )
+                    );
                 });
         });
     }
