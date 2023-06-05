@@ -39,6 +39,7 @@ const builtinDevices = {
     arduinoUno: () => require("../devices/arduinoUno/arduinoUno"),
     arduinoNano: () => require("../devices/arduinoUno/arduinoNano"),
     arduinoNano2: () => require("../devices/arduinoUno/arduinoNanoClone"),
+    arduinoNanoNobot: () => require("../devices/arduinoUno/arduinoNanoNobot"),
     arduinoUnoUltra: () => require("../devices/arduinoUno/arduinoUnoUltra"),
     arduinoUnoSE: () => require("../devices/arduinoUno/arduinoUnoSE"),
     // Arduino Leonardo
