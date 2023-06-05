@@ -27,6 +27,10 @@ const builtinExtensions = {
     videoSensing: () => require("../extensions/scratch3_video_sensing"),
     makeymakey: () => require("../extensions/scratch3_makeymakey"),
     ml: () => require("../extensions/scratch3_ml"),
+    tm2scratch: () => require("../extensions/tm2scratch"),
+    ob2scratch: () => require("../extensions/ob2scratch"),
+    tmpose2scratch: () => require("../extensions/tmpose2crath"),
+    handpose2scratch: () => require("../extensions/handpose2scratch"),
     speech: () => require("../extensions/scratch3_speech2"),
 };
 

@@ -128,6 +128,9 @@ const Message = {
     stage: {
         en: "stage",
     },
+    backdrop: {
+        en: "backdrop",
+    },
     first_training_warning: {
         en: "The first training will take a while, so do not click again and again.",
     },
@@ -864,6 +867,10 @@ class Scratch3MLScratchBlocks {
             {
                 text: Message.stage[this.locale],
                 value: "stage",
+            },
+            {
+                text: Message.backdrop[this.locale],
+                value: "backdrop",
             },
         ];
     }
