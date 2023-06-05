@@ -9,7 +9,7 @@ const maybeFormatMessage = require("../util/maybe-format-message");
 const BlockType = require("./block-type");
 
 // Local resources server address
-const localResourcesServerUrl = "https://nomobase.nomo-kit.com/";
+const localResourcesServerUrl = "https://nomopro.nomo-kit.com/";
 
 // These extensions are currently built into the VM repository but should not be loaded at startup.
 // TODO: move these out into a separate repository?
@@ -35,6 +35,7 @@ const builtinDevices = {
     arduinoUno: () => require("../devices/arduinoUno/arduinoUno"),
     arduinoNano: () => require("../devices/arduinoUno/arduinoNano"),
     arduinoNano2: () => require("../devices/arduinoUno/arduinoNanoClone"),
+    arduinoNanoNobot: () => require("../devices/arduinoUno/arduinoNanoNobot"),
     arduinoUnoUltra: () => require("../devices/arduinoUno/arduinoUnoUltra"),
     arduinoUnoSE: () => require("../devices/arduinoUno/arduinoUnoSE"),
     // Arduino Leonardo
