@@ -1,19 +1,21 @@
-const formatMessage = require('format-message');
-const Buffer = require('buffer').Buffer;
+const formatMessage = require("format-message");
+const Buffer = require("buffer").Buffer;
 
-const Serialport = require('../../io/serialport');
-const Base64Util = require('../../util/base64-util');
+const Serialport = require("../../io/serialport");
+const Base64Util = require("../../util/base64-util");
 
-const Firmata = require('../../lib/firmata/firmata');
+const Firmata = require("../../lib/firmata/firmata");
+const Motor = require("../../lib/firmata/motor");
 
 /**
  * A string to report connect firmata timeout.
  * @type {formatMessage}
  */
 const ConnectFirmataTimeout = formatMessage({
-    id: 'arduinoPeripheral.connection.connectFirmataTimeout',
-    default: 'Timeout when try to connect firmata, please download the firmware first',
-    description: 'label for connect firmata timeout'
+    id: "arduinoPeripheral.connection.connectFirmataTimeout",
+    default:
+        "Timeout when try to connect firmata, please download the firmware first",
+    description: "label for connect firmata timeout",
 });
 
 /**
@@ -39,21 +41,20 @@ const FirmataReadyTimeout = 6500;
 const FrimataReadTimeout = 2000;
 
 const Level = {
-    High: 'HIGH',
-    Low: 'LOW'
+    High: "HIGH",
+    Low: "LOW",
 };
 
 const Mode = {
-    Input: 'INPUT',
-    Output: 'OUTPUT',
-    InputPullup: 'INPUT_PULLUP'
+    Input: "INPUT",
+    Output: "OUTPUT",
+    InputPullup: "INPUT_PULLUP",
 };
 
 /**
  * Manage communication with a Arduino peripheral over a OpenBlock Link client socket.
  */
-class ArduinoPeripheral{
-
+class ArduinoPeripheral {
     /**
      * Construct a Arduino communication object.
      * @param {Runtime} runtime - the OpenBlock runtime
@@ -63,7 +64,14 @@ class ArduinoPeripheral{
      * @param {object} serialConfig - the serial config of the peripheral
      * @param {object} diveceOpt - the device optione of the peripheral
      */
-    constructor (runtime, deviceId, originalDeviceId, pnpidList, serialConfig, diveceOpt) {
+    constructor(
+        runtime,
+        deviceId,
+        originalDeviceId,
+        pnpidList,
+        serialConfig,
+        diveceOpt
+    ) {
         /**
          * The OpenBlock runtime used to trigger the green flag button.
          * @type {Runtime}
@@ -92,9 +100,9 @@ class ArduinoPeripheral{
         this._originalDeviceId = originalDeviceId;
 
         /**
-        * Pending data list. If busy is set when send, the data will push into this array to
-        * waitting to be sended.
-        */
+         * Pending data list. If busy is set when send, the data will push into this array to
+         * waitting to be sended.
+         */
         this._pendingData = [];
 
         this.reset = this.reset.bind(this);
@@ -138,34 +146,40 @@ class ArduinoPeripheral{
 
         this._startHeartbeat = this._startHeartbeat.bind(this);
         this._listenHeartbeat = this._listenHeartbeat.bind(this);
-        this._handleProgramModeUpdate = this._handleProgramModeUpdate.bind(this);
+        this._handleProgramModeUpdate =
+            this._handleProgramModeUpdate.bind(this);
+
+        this._motor1 = null;
+        this._motor2 = null;
+        this._motor3 = null;
+        this._motor4 = null;
     }
 
     /**
      * Called by the runtime when user wants to upload code to a peripheral.
      * @param {string} code - the code want to upload.
      */
-    upload (code) {
+    upload(code) {
         // Delete curent firmata. Otherwise, after uploading a new program in upload mode,
         // when returning to real time mode, since the old fimata service still exists,
         // an RealtimeDisconnectErrorerror will be reported quickly.
         if (this._firmata) {
-            this._firmata.removeAllListeners('reportversion');
-            this._firmata.removeAllListeners('ready');
+            this._firmata.removeAllListeners("reportversion");
+            this._firmata.removeAllListeners("ready");
             delete this._firmata;
         }
 
-        const base64Str = Buffer.from(code).toString('base64');
-        this._serialport.upload(base64Str, this.diveceOpt, 'base64');
+        const base64Str = Buffer.from(code).toString("base64");
+        this._serialport.upload(base64Str, this.diveceOpt, "base64");
     }
 
     /**
      * Called by the runtime when user wants to upload realtime firmware to a peripheral.
      */
-    uploadFirmware () {
+    uploadFirmware() {
         if (this._firmata) {
-            this._firmata.removeAllListeners('reportversion');
-            this._firmata.removeAllListeners('ready');
+            this._firmata.removeAllListeners("reportversion");
+            this._firmata.removeAllListeners("ready");
             delete this._firmata;
         }
         if (this._firmataReadyTimeoutID) {
@@ -179,7 +193,7 @@ class ArduinoPeripheral{
     /**
      * Called by the runtime when user wants to abort the uploading process.
      */
-    abortUpload () {
+    abortUpload() {
         this._serialport.abortUpload();
     }
 
@@ -188,15 +202,25 @@ class ArduinoPeripheral{
      * @param {Array.<string>} pnpidList - the array of pnp id list
      * @param {bool} listAll - wether list all connectable device
      */
-    scan (pnpidList, listAll) {
+    scan(pnpidList, listAll) {
         if (this._serialport) {
             this._serialport.disconnect();
         }
-        this._serialport = new Serialport(this._runtime, this._originalDeviceId, {
-            filters: {
-                pnpid: listAll ? ['*'] : (pnpidList ? pnpidList : this.pnpidList)
-            }
-        }, this._onConnect, this.reset);
+        this._serialport = new Serialport(
+            this._runtime,
+            this._originalDeviceId,
+            {
+                filters: {
+                    pnpid: listAll
+                        ? ["*"]
+                        : pnpidList
+                        ? pnpidList
+                        : this.pnpidList,
+                },
+            },
+            this._onConnect,
+            this.reset
+        );
     }
 
     /**
@@ -204,20 +228,20 @@ class ArduinoPeripheral{
      * @param {number} id - the id of the peripheral to connect to.
      * @param {?number} baudrate - the baudrate.
      */
-    connect (id, baudrate = null) {
+    connect(id, baudrate = null) {
         const config = Object.assign({}, this.serialConfig);
         if (baudrate) {
             config.baudRate = baudrate;
         }
         if (this._serialport) {
-            this._serialport.connectPeripheral(id, {config: config});
+            this._serialport.connectPeripheral(id, { config: config });
         }
     }
 
     /**
      * Disconnect from the peripheral.
      */
-    disconnect () {
+    disconnect() {
         if (this._serialport) {
             this._serialport.disconnect();
         }
@@ -228,10 +252,10 @@ class ArduinoPeripheral{
     /**
      * Reset all the state and timeout/interval ids.
      */
-    reset () {
+    reset() {
         if (this._firmata) {
-            this._firmata.removeAllListeners('reportversion');
-            this._firmata.removeAllListeners('ready');
+            this._firmata.removeAllListeners("reportversion");
+            this._firmata.removeAllListeners("ready");
             delete this._firmata;
         }
         if (this._firmataReadyTimeoutID) {
@@ -239,15 +263,21 @@ class ArduinoPeripheral{
             this._firmataReadyTimeoutID = null;
         }
         this._stopHeartbeat();
-        this._runtime.removeListener(this._runtime.constructor.PROGRAM_MODE_UPDATE, this._handleProgramModeUpdate);
-        this._runtime.removeListener(this._runtime.constructor.PERIPHERAL_UPLOAD_SUCCESS, this._startHeartbeat);
+        this._runtime.removeListener(
+            this._runtime.constructor.PROGRAM_MODE_UPDATE,
+            this._handleProgramModeUpdate
+        );
+        this._runtime.removeListener(
+            this._runtime.constructor.PERIPHERAL_UPLOAD_SUCCESS,
+            this._startHeartbeat
+        );
     }
 
     /**
      * Return true if connected to the peripheral.
      * @return {boolean} - whether the peripheral is connected.
      */
-    isConnected () {
+    isConnected() {
         let connected = false;
         if (this._serialport) {
             connected = this._serialport.isConnected();
@@ -259,7 +289,7 @@ class ArduinoPeripheral{
      * Set baudrate of the peripheral serialport.
      * @param {number} baudrate - the baudrate.
      */
-    setBaudrate (baudrate) {
+    setBaudrate(baudrate) {
         this._serialport.setBaudrate(baudrate);
     }
 
@@ -267,40 +297,42 @@ class ArduinoPeripheral{
      * Write data to the peripheral serialport.
      * @param {string} data - the data to write.
      */
-    write (data) {
+    write(data) {
         if (!this.isConnected()) return;
 
-        const base64Str = Buffer.from(data).toString('base64');
-        this._serialport.write(base64Str, 'base64');
+        const base64Str = Buffer.from(data).toString("base64");
+        this._serialport.write(base64Str, "base64");
     }
 
     /**
      * Send a message to the peripheral Serialport socket.
      * @param {Uint8Array} message - the message to write
      */
-    send (message) {
+    send(message) {
         if (!this.isConnected()) return;
-
+        console.log("send data:", message);
         const data = Base64Util.uint8ArrayToBase64(message);
-        this._serialport.write(data, 'base64');
+        this._serialport.write(data, "base64");
     }
 
     /**
      * Start send/recive heartbeat timer.
      * @private
      */
-    _startHeartbeat () {
+    _startHeartbeat() {
         if (this._runtime.isRealtimeMode()) {
             // eslint-disable-next-line no-negated-condition
             if (!this._firmata) {
                 // Start a timeout to report that firmata did not receive the ready event.
                 // This happens after connecting to a device that is not running the firmata service.
                 this._firmataReadyTimeoutID = window.setTimeout(() => {
-                    this._serialport.handleRealtimeDisconnectError(ConnectFirmataTimeout);
+                    this._serialport.handleRealtimeDisconnectError(
+                        ConnectFirmataTimeout
+                    );
                 }, FirmataReadyTimeout);
 
                 this._firmata = new Firmata(this.send.bind(this));
-                this._firmata.once('ready', () => {
+                this._firmata.once("ready", () => {
                     if (this._firmataReadyTimeoutID) {
                         window.clearTimeout(this._firmataReadyTimeoutID);
                         this._firmataReadyTimeoutID = null;
@@ -311,17 +343,19 @@ class ArduinoPeripheral{
                     this._serialport.handleRealtimeConnectSucess();
 
                     // Start the heartbeat listener.
-                    this._firmata.on('reportversion', this._listenHeartbeat);
+                    this._firmata.on("reportversion", this._listenHeartbeat);
 
                     this._firmataIntervelID = window.setInterval(() => {
                         // Send reportVersion request as heartbeat.
-                        this._firmata.reportVersion(() => { });
+                        this._firmata.reportVersion(() => {});
                     }, FrimataHeartbeatInterval);
 
                     // Start a timer if heartbeat timeout means failed to connect firmata.
                     this._firmataTimeoutID = window.setTimeout(() => {
                         this._isFirmataConnected = false;
-                        this._serialport.handleRealtimeDisconnectError(ConnectFirmataTimeout);
+                        this._serialport.handleRealtimeDisconnectError(
+                            ConnectFirmataTimeout
+                        );
                     }, FrimataHeartbeatTimeout);
                 });
             } else {
@@ -329,13 +363,15 @@ class ArduinoPeripheral{
 
                 this._firmataIntervelID = window.setInterval(() => {
                     // Send reportVersion request as heartbeat.
-                    this._firmata.reportVersion(() => { });
+                    this._firmata.reportVersion(() => {});
                 }, FrimataHeartbeatInterval);
 
                 // Start a timer if heartbeat timeout means failed to connect firmata.
                 this._firmataTimeoutID = window.setTimeout(() => {
                     this._isFirmataConnected = false;
-                    this._serialport.handleRealtimeDisconnectError(ConnectFirmataTimeout);
+                    this._serialport.handleRealtimeDisconnectError(
+                        ConnectFirmataTimeout
+                    );
                 }, FrimataHeartbeatTimeout);
             }
         }
@@ -345,7 +381,7 @@ class ArduinoPeripheral{
      * Stop send/recive heartbeat timer.
      * @private
      */
-    _stopHeartbeat () {
+    _stopHeartbeat() {
         if (this._firmataTimeoutID) {
             window.clearTimeout(this._firmataTimeoutID);
             this._firmataTimeoutID = null;
@@ -361,7 +397,7 @@ class ArduinoPeripheral{
      * Listen the heartbeat and emit connection state event.
      * @private
      */
-    _listenHeartbeat () {
+    _listenHeartbeat() {
         if (!this._isFirmataConnected) {
             this._isFirmataConnected = true;
             this._serialport.handleRealtimeConnectSucess();
@@ -370,14 +406,16 @@ class ArduinoPeripheral{
         window.clearTimeout(this._firmataTimeoutID);
         this._firmataTimeoutID = window.setTimeout(() => {
             this._isFirmataConnected = false;
-            this._serialport.handleRealtimeDisconnectError(ConnectFirmataTimeout);
+            this._serialport.handleRealtimeDisconnectError(
+                ConnectFirmataTimeout
+            );
         }, FrimataHeartbeatTimeout);
     }
 
     /**
      * Handle the program mode update event. If in realtime mode start the heartbeat else stop.
      */
-    _handleProgramModeUpdate () {
+    _handleProgramModeUpdate() {
         if (this._runtime.isRealtimeMode()) {
             this._startHeartbeat();
         } else {
@@ -386,8 +424,8 @@ class ArduinoPeripheral{
             // firmata and wait for the next connection.
             if (this._firmataReadyTimeoutID) {
                 if (this._firmata) {
-                    this._firmata.removeAllListeners('reportversion');
-                    this._firmata.removeAllListeners('ready');
+                    this._firmata.removeAllListeners("reportversion");
+                    this._firmata.removeAllListeners("ready");
                     delete this._firmata;
                 }
                 if (this._firmataReadyTimeoutID) {
@@ -403,13 +441,19 @@ class ArduinoPeripheral{
      * Starts reading data from peripheral after serialport has connected to it.
      * @private
      */
-    _onConnect () {
+    _onConnect() {
         this._serialport.read(this._onMessage);
 
         this._startHeartbeat();
 
-        this._runtime.on(this._runtime.constructor.PROGRAM_MODE_UPDATE, this._handleProgramModeUpdate);
-        this._runtime.on(this._runtime.constructor.PERIPHERAL_UPLOAD_SUCCESS, this._startHeartbeat);
+        this._runtime.on(
+            this._runtime.constructor.PROGRAM_MODE_UPDATE,
+            this._handleProgramModeUpdate
+        );
+        this._runtime.on(
+            this._runtime.constructor.PERIPHERAL_UPLOAD_SUCCESS,
+            this._startHeartbeat
+        );
     }
 
     /**
@@ -417,13 +461,16 @@ class ArduinoPeripheral{
      * @param {object} base64 - the incoming serialport data.
      * @private
      */
-    _onMessage (base64) {
+    _onMessage(base64) {
         if (this._runtime.isRealtimeMode()) {
             const data = Base64Util.base64ToUint8Array(base64);
             this._firmata.onReciveData(data);
         } else {
-            const consoleData = Buffer.from(base64, 'base64');
-            this._runtime.emit(this._runtime.constructor.PERIPHERAL_RECIVE_DATA, consoleData);
+            const consoleData = Buffer.from(base64, "base64");
+            this._runtime.emit(
+                this._runtime.constructor.PERIPHERAL_RECIVE_DATA,
+                consoleData
+            );
         }
     }
 
@@ -431,7 +478,7 @@ class ArduinoPeripheral{
      * Return true if peripheral has connected to firmata and program mode is realtime.
      * @return {boolean} - whether the peripheral is ready for realtime mode communication.
      */
-    isReady () {
+    isReady() {
         if (this._runtime.isRealtimeMode() && this._isFirmataConnected) {
             return true;
         }
@@ -442,8 +489,8 @@ class ArduinoPeripheral{
      * @param {PIN} pin - the pin string to parse.
      * @return {number} - the pin number.
      */
-    parsePin (pin) {
-        if (pin.charAt(0) === 'A') {
+    parsePin(pin) {
+        if (pin.charAt(0) === "A") {
             return parseInt(pin.slice(1), 10) + 14;
         }
         return parseInt(pin, 10);
@@ -453,7 +500,7 @@ class ArduinoPeripheral{
      * @param {LEVEL} level - the level string to parse.
      * @return {number} - the level in number.
      */
-    parseLevel (level) {
+    parseLevel(level) {
         if (level === Level.High) {
             return 1;
         }
@@ -464,19 +511,19 @@ class ArduinoPeripheral{
      * @param {PIN} pin - the pin to set.
      * @param {MODE} mode - the pin mode to set.
      */
-    setPinMode (pin, mode) {
+    setPinMode(pin, mode) {
         if (this.isReady()) {
             pin = this.parsePin(pin);
             switch (mode) {
-            case Mode.Input:
-                mode = this._firmata.MODES.INPUT;
-                break;
-            case Mode.Output:
-                mode = this._firmata.MODES.OUTPUT;
-                break;
-            case Mode.InputPullup:
-                mode = this._firmata.MODES.PULLUP;
-                break;
+                case Mode.Input:
+                    mode = this._firmata.MODES.INPUT;
+                    break;
+                case Mode.Output:
+                    mode = this._firmata.MODES.OUTPUT;
+                    break;
+                case Mode.InputPullup:
+                    mode = this._firmata.MODES.PULLUP;
+                    break;
             }
             this._firmata.pinMode(pin, mode);
         }
@@ -486,7 +533,7 @@ class ArduinoPeripheral{
      * @param {PIN} pin - the pin to set.
      * @param {LEVEL} level - the pin level to set.
      */
-    setDigitalOutput (pin, level) {
+    setDigitalOutput(pin, level) {
         if (this.isReady()) {
             pin = this.parsePin(pin);
             level = this.parseLevel(level);
@@ -498,7 +545,7 @@ class ArduinoPeripheral{
      * @param {PIN} pin - the pin to set.
      * @param {VALUE} value - the pwm value to set.
      */
-    setPwmOutput (pin, value) {
+    setPwmOutput(pin, value) {
         if (this.isReady()) {
             pin = this.parsePin(pin);
             if (value < 0) {
@@ -516,11 +563,11 @@ class ArduinoPeripheral{
      * @param {PIN} pin - the pin to read.
      * @return {Promise} - a Promise that resolves when read from peripheral.
      */
-    readDigitalPin (pin) {
+    readDigitalPin(pin) {
         if (this.isReady()) {
             pin = this.parsePin(pin);
-            return new Promise(resolve => {
-                this._firmata.digitalRead(pin, value => {
+            return new Promise((resolve) => {
+                this._firmata.digitalRead(pin, (value) => {
                     resolve(value);
                 });
                 window.setTimeout(() => {
@@ -534,14 +581,14 @@ class ArduinoPeripheral{
      * @param {PIN} pin - the pin to read.
      * @return {Promise} - a Promise that resolves when read from peripheral.
      */
-    readAnalogPin (pin) {
+    readAnalogPin(pin) {
         if (this.isReady()) {
             pin = this.parsePin(pin);
             // Shifting to analog pin number.
             pin = pin - 14;
             this._firmata.pinMode(pin, this._firmata.MODES.ANALOG);
-            return new Promise(resolve => {
-                this._firmata.analogRead(pin, value => {
+            return new Promise((resolve) => {
+                this._firmata.analogRead(pin, (value) => {
                     resolve(value);
                 });
                 window.setTimeout(() => {
@@ -555,7 +602,7 @@ class ArduinoPeripheral{
      * @param {PIN} pin - the pin to set.
      * @param {VALUE} value - the degree to set.
      */
-    setServoOutput (pin, value) {
+    setServoOutput(pin, value) {
         if (this.isReady()) {
             pin = this.parsePin(pin);
             if (value < 0) {
@@ -569,6 +616,120 @@ class ArduinoPeripheral{
 
             this._firmata.servoConfig(pin, 600, 2400);
             this._firmata.servoWrite(pin, value);
+        }
+    }
+
+    setupMotor(motor, pin1, pin2, pwmPin) {
+        if (this.isReady()) {
+            if (motor == "M1") {
+                this._motor1 = new Motor(
+                    this._firmata,
+                    this.parsePin(pin1),
+                    this.parsePin(pin2),
+                    this.parsePin(pwmPin)
+                );
+            } else if (motor == "M2") {
+                this._motor2 = new Motor(
+                    this._firmata,
+                    this.parsePin(pin1),
+                    this.parsePin(pin2),
+                    this.parsePin(pwmPin)
+                );
+            } else if (motor == "M3") {
+                this._motor3 = new Motor(
+                    this._firmata,
+                    this.parsePin(pin1),
+                    this.parsePin(pin2),
+                    this.parsePin(pwmPin)
+                );
+            } else if (motor == "M4") {
+                this._motor4 = new Motor(
+                    this._firmata,
+                    this.parsePin(pin1),
+                    this.parsePin(pin2),
+                    this.parsePin(pwmPin)
+                );
+            }
+        }
+    }
+    motorforward(motor, speed) {
+        if (this.isReady()) {
+            if (speed < 0) {
+                speed = 0;
+            }
+            if (speed > 255) {
+                speed = 255;
+            }
+            if (motor == "M1") {
+                this._motor1.forward(speed);
+            } else if (motor == "M2") {
+                this._motor2.forward(speed);
+            } else if (motor == "M3") {
+                this._motor3.forward(speed);
+            } else if (motor == "M4") {
+                this._motor4.forward(speed);
+            }
+        }
+    }
+
+    motorbackward(motor, speed) {
+        if (this.isReady()) {
+            if (motor == "M1") {
+                this._motor1.backward(speed);
+            } else if (motor == "M2") {
+                this._motor2.backward(speed);
+            } else if (motor == "M3") {
+                this._motor3.backward(speed);
+            } else if (motor == "M4") {
+                this._motor4.backward(speed);
+            }
+        }
+    }
+
+    motorstop(motor) {
+        if (this.isReady()) {
+            if (motor == "M1") {
+                this._motor1.stop();
+            } else if (motor == "M2") {
+                this._motor2.stop();
+            } else if (motor == "M3") {
+                this._motor3.stop();
+            } else if (motor == "M4") {
+                this._motor4.stop();
+            }
+        }
+    }
+
+    setRelay(pin, value) {
+        if (this.isReady()) {
+            pin = this.parsePin(pin);
+            value = this.parseLevel(value);
+            this._firmata.pinMode(pin, this._firmata.MODES.OUTPUT);
+            this._firmata.digitalWrite(pin, value);
+        }
+    }
+
+    getUltrasonicDistance(trigPin, echoPin) {
+        if (this.isReady()) {
+            trigPin = this.parsePin(trigPin);
+            echoPin = this.parsePin(echoPin);
+            this._firmata.pinMode(trigPin, this._firmata.MODES.OUTPUT);
+            this._firmata.pinMode(echoPin, this._firmata.MODES.INPUT);
+
+            return new Promise((resolve) => {
+                this._firmata.digitalWrite(trigPin, this._firmata.HIGH);
+                window.setTimeout(() => {
+                    this._firmata.digitalWrite(trigPin, this._firmata.LOW);
+                }, 2);
+                this._firmata.pulseIn(
+                    echoPin,
+                    this._firmata.HIGH,
+                    (duration) => {
+                        let distance = duration / 58;
+                        resolve(distance);
+                    }
+                );
+            });
         }
     }
 }
