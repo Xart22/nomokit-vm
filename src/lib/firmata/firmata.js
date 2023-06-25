@@ -63,6 +63,7 @@ const STEPPER = 0x72;
 const ACCELSTEPPER = 0x62;
 const STRING_DATA = 0x71;
 const SYSTEM_RESET = 0xff;
+const REPORT_ULTRASONIC = 0x7c;
 
 const MAX_PIN_COUNT = 128;
 
@@ -481,6 +482,9 @@ const SYSEX_RESPONSE = {
      */
 
     [STRING_DATA](board) {
+        console.log(
+            Buffer.from(board.buffer.slice(2, -1)).toString().replace(/\0/g, "")
+        );
         board.emit(
             "string",
             Buffer.from(board.buffer.slice(2, -1)).toString().replace(/\0/g, "")
@@ -768,6 +772,26 @@ class Firmata extends Emitter {
         });
     }
 
+    reportUltrasonicDistance(trigPin, echoPin, callback) {
+        this.once("string", (message) => {
+            if (message.includes("UL")) {
+                const data = message.split("-");
+                callback(data[1]);
+            }
+        });
+        this.sendString(`UL,${trigPin},${echoPin}`);
+    }
+
+    reportDHTValue(type, sensor, pin, callback) {
+        this.once("string", (message) => {
+            if (message.includes("DHT-")) {
+                const data = message.split("-");
+                callback(data[1] == "nan" ? 0 : data[1]);
+            }
+        });
+        this.sendString(`DHT,${type},${sensor},${pin}`);
+    }
+
     onReciveData(data) {
         for (let i = 0; i < data.length; i++) {
             const byte = data[i];
@@ -783,7 +807,6 @@ class Firmata extends Emitter {
                 // [START_SYSEX, ... END_SYSEX]
                 if (first === START_SYSEX && last === END_SYSEX) {
                     const handler = SYSEX_RESPONSE[this.buffer[1]];
-
                     // Ensure a valid SYSEX_RESPONSE handler exists
                     // Only process these AFTER the REPORT_VERSION
                     // message has been received and processed.

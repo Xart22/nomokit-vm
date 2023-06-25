@@ -310,7 +310,6 @@ class ArduinoPeripheral {
      */
     send(message) {
         if (!this.isConnected()) return;
-        console.log("send data:", message);
         const data = Base64Util.uint8ArrayToBase64(message);
         this._serialport.write(data, "base64");
     }
@@ -711,25 +710,43 @@ class ArduinoPeripheral {
 
     getUltrasonicDistance(trigPin, echoPin) {
         if (this.isReady()) {
-            trigPin = this.parsePin(trigPin);
-            echoPin = this.parsePin(echoPin);
-            this._firmata.pinMode(trigPin, this._firmata.MODES.OUTPUT);
-            this._firmata.pinMode(echoPin, this._firmata.MODES.INPUT);
-
+            trigPin = this.parsePin(trigPin).toString();
+            echoPin = this.parsePin(echoPin).toString();
             return new Promise((resolve) => {
-                this._firmata.digitalWrite(trigPin, this._firmata.HIGH);
-                window.setTimeout(() => {
-                    this._firmata.digitalWrite(trigPin, this._firmata.LOW);
-                }, 2);
-                this._firmata.pulseIn(
+                this._firmata.reportUltrasonicDistance(
+                    trigPin,
                     echoPin,
-                    this._firmata.HIGH,
-                    (duration) => {
-                        let distance = duration / 58;
-                        resolve(distance);
+                    (value) => {
+                        if (value > 1187) {
+                            value = 0;
+                        }
+                        resolve(value);
                     }
                 );
+                window.setTimeout(() => {
+                    resolve();
+                }, FrimataReadTimeout);
             });
+        }
+    }
+    getDhtValue(type, sensor, pin) {
+        if (this.isReady()) {
+            pin = this.parsePin(pin);
+            return new Promise((resolve) => {
+                this._firmata.reportDHTValue(type, sensor, pin, (value) => {
+                    value = value.trim();
+                    resolve(value == "NAN" ? 0 : value);
+                });
+                window.setTimeout(() => {
+                    resolve();
+                }, FrimataReadTimeout);
+            });
+        }
+    }
+
+    readAnalogSensor(pin) {
+        if (this.isReady()) {
+            return this.readAnalogPin(pin);
         }
     }
 }
