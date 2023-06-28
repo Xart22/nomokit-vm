@@ -792,6 +792,29 @@ class Firmata extends Emitter {
         this.sendString(`DHT,${type},${sensor},${pin}`);
     }
 
+    initLcd(rst, en, d4, d5, d6, d7) {
+        this.sendString(`LCDINIT,${rst},${en},${d4},${d5},${d6},${d7}`);
+    }
+    initLcdI2C(address) {
+        address = parseInt(address, 16);
+        this.sendString(`LCDINITI2C,${address}`);
+    }
+
+    printLcd(message) {
+        this.sendString(`LCDPRINT,${message}`);
+    }
+    setCursor(col, row) {
+        this.sendString(`LCDSETCURSOR,${col},${row}`);
+    }
+    clearLcd() {
+        this.sendString(`LCDCLEAR`);
+    }
+
+    setModeLcd(mode) {
+        console.log("setModeLcd", mode);
+        this.sendString(`LCDSET,${mode}`);
+    }
+
     onReciveData(data) {
         for (let i = 0; i < data.length; i++) {
             const byte = data[i];

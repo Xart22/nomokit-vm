@@ -1024,6 +1024,7 @@ class OpenBlockArduinoUnoDevice {
                                 defaultValue: "3",
                             },
                         },
+                        programMode: [ProgramModeType.REALTIME],
                     },
                     {
                         opcode: "runMotor",
@@ -1050,6 +1051,7 @@ class OpenBlockArduinoUnoDevice {
                                 defaultValue: "100",
                             },
                         },
+                        programMode: [ProgramModeType.REALTIME],
                     },
                     {
                         opcode: "stopMotor",
@@ -1066,6 +1068,7 @@ class OpenBlockArduinoUnoDevice {
                                 defaultValue: Motor.M1,
                             },
                         },
+                        programMode: [ProgramModeType.REALTIME],
                     },
                     "---",
                     {
@@ -1087,6 +1090,8 @@ class OpenBlockArduinoUnoDevice {
                                 defaultValue: "90",
                             },
                         },
+
+                        programMode: [ProgramModeType.REALTIME],
                     },
                     "---",
                     {
@@ -1109,6 +1114,7 @@ class OpenBlockArduinoUnoDevice {
                                 defaultValue: Level.Low,
                             },
                         },
+                        programMode: [ProgramModeType.REALTIME],
                     },
                 ],
                 menus: {
@@ -1178,6 +1184,7 @@ class OpenBlockArduinoUnoDevice {
                                 defaultValue: Pins.D4,
                             },
                         },
+                        programMode: [ProgramModeType.REALTIME],
                     },
                     {
                         opcode: "readDigitalSensor",
@@ -1199,6 +1206,7 @@ class OpenBlockArduinoUnoDevice {
                                 defaultValue: Pins.D3,
                             },
                         },
+                        programMode: [ProgramModeType.REALTIME],
                     },
                     {
                         opcode: "getDhtValue",
@@ -1226,6 +1234,7 @@ class OpenBlockArduinoUnoDevice {
                                 defaultValue: Pins.D3,
                             },
                         },
+                        programMode: [ProgramModeType.REALTIME],
                     },
                     {
                         opcode: "readAnalogSensor",
@@ -1247,6 +1256,7 @@ class OpenBlockArduinoUnoDevice {
                                 defaultValue: Pins.A0,
                             },
                         },
+                        programMode: [ProgramModeType.REALTIME],
                     },
                 ],
                 menus: {
@@ -1395,9 +1405,10 @@ class OpenBlockArduinoUnoDevice {
                                 defaultValue: Pins.D7,
                             },
                         },
+                        programMode: [ProgramModeType.REALTIME],
                     },
                     {
-                        opcode: "initLcdI2c",
+                        opcode: "initLcdI2C",
                         text: formatMessage({
                             id: "arduinoUno.lcd.initLcdI2c",
                             default: "inittialze lcd on I2C address [ADDRESS]",
@@ -1410,6 +1421,7 @@ class OpenBlockArduinoUnoDevice {
                                 defaultValue: "0x27",
                             },
                         },
+                        programMode: [ProgramModeType.REALTIME],
                     },
 
                     "---",
@@ -1424,16 +1436,19 @@ class OpenBlockArduinoUnoDevice {
                         arguments: {
                             ROW: {
                                 type: ArgumentType.STRING,
+                                menu: "lcdRows",
                                 defaultValue: "0",
                             },
                             COLUMN: {
                                 type: ArgumentType.STRING,
+                                menu: "lcdColumns",
                                 defaultValue: "0",
                             },
                         },
+                        programMode: [ProgramModeType.REALTIME],
                     },
                     {
-                        opcode: "print",
+                        opcode: "printLcd",
                         text: formatMessage({
                             id: "arduinoUno.lcd.print",
                             default: "print [TEXT]",
@@ -1446,42 +1461,20 @@ class OpenBlockArduinoUnoDevice {
                                 defaultValue: "Hello World!",
                             },
                         },
+                        programMode: [ProgramModeType.REALTIME],
                     },
                     {
-                        opcode: "printAt",
-                        text: formatMessage({
-                            id: "arduinoUno.lcd.printAt",
-                            default:
-                                "print [TEXT] at row [ROW] column [COLUMN]",
-                            description: "arduinoUno print at",
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            TEXT: {
-                                type: ArgumentType.STRING,
-                                defaultValue: "Hello World!",
-                            },
-                            ROW: {
-                                type: ArgumentType.STRING,
-                                defaultValue: "0",
-                            },
-                            COLUMN: {
-                                type: ArgumentType.STRING,
-                                defaultValue: "0",
-                            },
-                        },
-                    },
-                    {
-                        opcode: "clear",
+                        opcode: "clearLcd",
                         text: formatMessage({
                             id: "arduinoUno.lcd.clear",
                             default: "clear lcd",
                             description: "arduinoUno clear lcd",
                         }),
                         blockType: BlockType.COMMAND,
+                        programMode: [ProgramModeType.REALTIME],
                     },
                     {
-                        opcode: "setMode",
+                        opcode: "setModeLcd",
                         text: formatMessage({
                             id: "arduinoUno.lcd.setMode",
                             default: "set lcd mode [MODE]",
@@ -1491,10 +1484,11 @@ class OpenBlockArduinoUnoDevice {
                         arguments: {
                             MODE: {
                                 type: ArgumentType.STRING,
-                                menu: "mode",
-                                defaultValue: "0",
+                                menu: "modeLcd",
+                                defaultValue: "BLINK",
                             },
                         },
+                        programMode: [ProgramModeType.REALTIME],
                     },
                 ],
                 menus: {
@@ -1585,6 +1579,62 @@ class OpenBlockArduinoUnoDevice {
                             {
                                 text: "Generic",
                                 value: "generic",
+                            },
+                        ],
+                    },
+                    lcdColumns: {
+                        items: [...Array(16).keys()].map((i) => ({
+                            text: (1 + i).toString(),
+                            value: i.toString(),
+                        })),
+                    },
+                    lcdRows: {
+                        items: [...Array(2).keys()].map((i) => ({
+                            text: (1 + i).toString(),
+                            value: i.toString(),
+                        })),
+                    },
+                    modeLcd: {
+                        items: [
+                            {
+                                text: "Blink",
+                                value: "BLINK",
+                            },
+                            {
+                                text: "No Blink",
+                                value: "NOBLINK",
+                            },
+                            {
+                                text: "Cursor",
+                                value: "CURSOR",
+                            },
+                            {
+                                text: "No Cursor",
+                                value: "NOCURSOR",
+                            },
+                            {
+                                text: "Display",
+                                value: "DISPLAY",
+                            },
+                            {
+                                text: "No Display",
+                                value: "NODISPLAY",
+                            },
+                            {
+                                text: "Autoscroll",
+                                value: "AUTOSCROLL",
+                            },
+                            {
+                                text: "No Autoscroll",
+                                value: "NOAUTOSCROLL",
+                            },
+                            {
+                                text: "Scroll Display Left",
+                                value: "SCROLLDISPLAYLEFT",
+                            },
+                            {
+                                text: "Scroll Display Right",
+                                value: "SCROLLDISPLAYRIGHT",
                             },
                         ],
                     },
@@ -1687,6 +1737,32 @@ class OpenBlockArduinoUnoDevice {
     }
     readAnalogSensor(args) {
         return this._peripheral.readAnalogSensor(args.PIN);
+    }
+    initLcd(args) {
+        this._peripheral.initLcd(
+            args.RST,
+            args.EN,
+            args.D4,
+            args.D5,
+            args.D6,
+            args.D7
+        );
+    }
+    initLcdI2C(args) {
+        this._peripheral.initLcdI2C(args.ADDRESS);
+    }
+
+    printLcd(args) {
+        this._peripheral.printLcd(args.TEXT);
+    }
+    setCursor(args) {
+        this._peripheral.setCursor(args.COL, args.ROW);
+    }
+    clearLcd() {
+        this._peripheral.clearLcd();
+    }
+    setModeLcd(args) {
+        this._peripheral.setModeLcd(args.MODE);
     }
 }
 

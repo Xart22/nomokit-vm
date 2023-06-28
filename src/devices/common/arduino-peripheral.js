@@ -749,6 +749,42 @@ class ArduinoPeripheral {
             return this.readAnalogPin(pin);
         }
     }
+
+    initLcd(rst, en, d4, d5, d6, d7) {
+        if (this.isReady()) {
+            this._firmata.initLcd(rst, en, d4, d5, d6, d7);
+        }
+    }
+
+    initLcdI2C(address) {
+        if (this.isReady()) {
+            this._firmata.initLcdI2C(address);
+        }
+    }
+
+    printLcd(message) {
+        if (this.isReady()) {
+            this._firmata.printLcd(message);
+        }
+    }
+
+    setCursor(row, col) {
+        if (this.isReady()) {
+            this._firmata.setCursor(row, col);
+        }
+    }
+
+    clearLcd() {
+        if (this.isReady()) {
+            this._firmata.clearLcd();
+        }
+    }
+
+    setModeLcd(mode) {
+        if (this.isReady()) {
+            this._firmata.setModeLcd(mode);
+        }
+    }
 }
 
 module.exports = ArduinoPeripheral;
