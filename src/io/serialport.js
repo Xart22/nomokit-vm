@@ -298,13 +298,13 @@ class Serialport extends JSONRPC {
      * @param {string} e - error message.
      */
     handleRealtimeDisconnectError(e) {
-        this._runtime.emit(
-            this._runtime.constructor.PERIPHERAL_REALTIME_CONNECTION_LOST_ERROR,
-            {
-                message: e,
-                deviceId: this._deviceId,
-            }
-        );
+        // this._runtime.emit(
+        //     this._runtime.constructor.PERIPHERAL_REALTIME_CONNECTION_LOST_ERROR,
+        //     {
+        //         message: e,
+        //         deviceId: this._deviceId,
+        //     }
+        // );
     }
 
     handleRealtimeConnectSucess() {
