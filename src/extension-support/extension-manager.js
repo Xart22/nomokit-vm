@@ -27,6 +27,10 @@ const builtinExtensions = {
     videoSensing: () => require("../extensions/scratch3_video_sensing"),
     makeymakey: () => require("../extensions/scratch3_makeymakey"),
     ml: () => require("../extensions/scratch3_ml"),
+    tm2scratch: () => require("../extensions/tm2scratch"),
+    ob2scratch: () => require("../extensions/ob2scratch"),
+    tmpose2scratch: () => require("../extensions/tmpose2crath"),
+    handpose2scratch: () => require("../extensions/handpose2scratch"),
     speech: () => require("../extensions/scratch3_speech2"),
 };
 
@@ -404,7 +408,6 @@ class ExtensionManager {
      * @returns {Promise} resolved once the device extension is loaded or rejected on failure
      */
     loadDeviceExtension(deviceExtensionId) {
-
         return new Promise((resolve, reject) => {
             const deviceExtension = this._deviceExtensions.find(
                 (ext) => ext.extensionId === deviceExtensionId
@@ -458,12 +461,12 @@ class ExtensionManager {
                     );
                     return resolve();
                 })
-                .catch((err) =>{
+                .catch((err) => {
                     console.log(err);
                     reject(
                         `Error while load device extension ` +
                             `${deviceExtension.extensionId}'s js file: ${err}`
-                    )
+                    );
                 });
         });
     }
