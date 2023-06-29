@@ -299,7 +299,6 @@ class ArduinoPeripheral {
      */
     write(data) {
         if (!this.isConnected()) return;
-
         const base64Str = Buffer.from(data).toString("base64");
         this._serialport.write(base64Str, "base64");
     }
@@ -729,13 +728,12 @@ class ArduinoPeripheral {
             });
         }
     }
-    getDhtValue(type, sensor, pin) {
+    getDhtValue(sensor, pin) {
         if (this.isReady()) {
             pin = this.parsePin(pin);
             return new Promise((resolve) => {
-                this._firmata.reportDHTValue(type, sensor, pin, (value) => {
-                    value = value.trim();
-                    resolve(value == "NAN" ? 0 : value);
+                this._firmata.reportDHTValue("DHT11", sensor, pin, (value) => {
+                    resolve(value);
                 });
                 window.setTimeout(() => {
                     resolve();
@@ -783,6 +781,138 @@ class ArduinoPeripheral {
     setModeLcd(mode) {
         if (this.isReady()) {
             this._firmata.setModeLcd(mode);
+        }
+    }
+
+    readAnalogPinEsp32(pin) {
+        if (this.isReady()) {
+            return new Promise((resolve) => {
+                this._firmata.readAnalogPinEsp32(pin, (value) => {
+                    resolve(value);
+                });
+                window.setTimeout(() => {
+                    resolve();
+                }, FrimataReadTimeout);
+            });
+        }
+    }
+
+    readDigitalSensorEsp32(pin) {
+        if (this.isReady()) {
+            return new Promise((resolve) => {
+                this._firmata.readDigitalPinEsp32(pin, (value) => {
+                    resolve(value);
+                });
+                window.setTimeout(() => {
+                    resolve();
+                }, FrimataReadTimeout);
+            });
+        }
+    }
+
+    setDigitalOutputEsp32(pin, value) {
+        if (this.isReady()) {
+            this._firmata.setDigitalOutputEsp32(pin, value);
+        }
+    }
+
+    readDigitalPinEsp32(pin) {
+        if (this.isReady()) {
+            return new Promise((resolve) => {
+                this._firmata.readDigitalPinEsp32(pin, (value) => {
+                    resolve(value);
+                });
+                window.setTimeout(() => {
+                    resolve();
+                }, FrimataReadTimeout);
+            });
+        }
+    }
+
+    readTouchPinEsp32(pin) {
+        if (this.isReady()) {
+            return new Promise((resolve) => {
+                this._firmata.readTouchPinEsp32(pin, (value) => {
+                    resolve(value);
+                });
+                window.setTimeout(() => {
+                    resolve();
+                }, FrimataReadTimeout);
+            });
+        }
+    }
+
+    setServoOutputEsp32(pin, value) {
+        if (this.isReady()) {
+            this._firmata.setServoOutputEsp32(pin, value);
+        }
+    }
+
+    setMotorEsp32(motor, pin1, pin2, pwmPin) {
+        if (this.isReady()) {
+            if (motor == "1") {
+                this._motor1 = {
+                    pin1: pin1,
+                    pin2: pin2,
+                    motor: motor,
+                };
+            } else if ("2") {
+                this._motor2 = {
+                    pin1: pin1,
+                    pin2: pin2,
+                    motor: motor,
+                };
+            } else if ("3") {
+                this._motor3 = {
+                    pin1: pin1,
+                    pin2: pin2,
+                    motor: motor,
+                };
+            } else {
+                this._motor4 = {
+                    pin1: pin1,
+                    pin2: pin2,
+                    motor: motor,
+                };
+            }
+            this._firmata.setMotorEsp32(motor, pin1, pin2, pwmPin);
+        }
+    }
+
+    setMotorDirectionEsp32(direction, motor, speed) {
+        if (this.isReady()) {
+            if (motor == "1") {
+                motor = this._motor1;
+            } else if (motor == "2") {
+                motor = this._motor2;
+            } else if (motor == "3") {
+                motor = this._motor3;
+            } else {
+                motor = this._motor4;
+            }
+
+            this._firmata.setMotorDirectionEsp32(direction, motor, speed);
+        }
+    }
+
+    stopMotorEsp32(motor) {
+        if (this.isReady()) {
+            if (motor == "1") {
+                motor = this._motor1;
+            } else if (motor == "2") {
+                motor = this._motor2;
+            } else if (motor == "3") {
+                motor = this._motor3;
+            } else {
+                motor = this._motor4;
+            }
+            this._firmata.stopMotorEsp32(motor);
+        }
+    }
+
+    setRelayEsp32(pin, value) {
+        if (this.isReady()) {
+            this._firmata.setRelayEsp32(pin, value);
         }
     }
 }

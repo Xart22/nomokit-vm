@@ -482,9 +482,6 @@ const SYSEX_RESPONSE = {
      */
 
     [STRING_DATA](board) {
-        console.log(
-            Buffer.from(board.buffer.slice(2, -1)).toString().replace(/\0/g, "")
-        );
         board.emit(
             "string",
             Buffer.from(board.buffer.slice(2, -1)).toString().replace(/\0/g, "")
@@ -770,6 +767,7 @@ class Firmata extends Emitter {
                 }
             });
         });
+        // this.setMaxListeners(20);
     }
 
     reportUltrasonicDistance(trigPin, echoPin, callback) {
@@ -779,6 +777,7 @@ class Firmata extends Emitter {
                 callback(data[1]);
             }
         });
+
         this.sendString(`UL,${trigPin},${echoPin}`);
     }
 
@@ -811,8 +810,73 @@ class Firmata extends Emitter {
     }
 
     setModeLcd(mode) {
-        console.log("setModeLcd", mode);
         this.sendString(`LCDSET,${mode}`);
+    }
+
+    servoEsp32(pin, value) {
+        this.sendString(`SERVO,${pin},${value}`);
+    }
+    readAnalogPinEsp32(pin, callback) {
+        this.once("string", (message) => {
+            if (message.includes("ANALOG")) {
+                const data = message.split("-");
+                callback(data[1]);
+            }
+        });
+        this.sendString(`ANALOG,${pin}`);
+    }
+
+    readDigitalPinEsp32(pin, callback) {
+        this.once("string", (message) => {
+            if (message.includes("DIGITAL")) {
+                const data = message.split("-");
+                callback(data[1]);
+            }
+        });
+        this.sendString(`DIGITAL,${pin}`);
+    }
+
+    setDigitalOutputEsp32(pin, value) {
+        this.sendString(`DIGITALOUT,${pin},${value}`);
+    }
+
+    readTouchPinEsp32(pin, callback) {
+        this.once("string", (message) => {
+            if (message.includes("TOUCH")) {
+                const data = message.split("-");
+                callback(data[1]);
+            }
+        });
+        this.sendString(`TOUCH,${pin}`);
+    }
+
+    setServoOutputEsp32(pin, value) {
+        this.sendString(`SERVO,${pin},${value}`);
+    }
+
+    setMotorEsp32(motor, pin1, pin2, pwmPin) {
+        this.sendString(`SETMOTOR,${pin1},${pin2},${pwmPin},${motor}`);
+    }
+
+    setMotorDirectionEsp32(direction, motor, speed) {
+        if (motor == null) {
+            return;
+        }
+        this.sendString(
+            `${direction},${motor.pin1},${motor.pin2},${motor.motor},${speed}`
+        );
+    }
+
+    stopMotorEsp32(motor) {
+        if (motor == null) {
+            return;
+        }
+        this.sendString(`STOP,${motor.pin1},${motor.pin2},${motor.motor}`);
+    }
+
+    setRelayEsp32(pin, value) {
+        console.log(`RELAY,${pin},${value}`);
+        this.sendString(`RELAY,${pin},${value}`);
     }
 
     onReciveData(data) {

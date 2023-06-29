@@ -32,7 +32,7 @@ const PNPID_LIST = [
  * @readonly
  */
 const SERIAL_CONFIG = {
-    baudRate: 57600,
+    baudRate: 9600,
     dataBits: 8,
     stopBits: 1,
 };
@@ -44,7 +44,7 @@ const SERIAL_CONFIG = {
 const DIVECE_OPT = {
     type: "arduino",
     fqbn: "arduino:avr:uno",
-    firmware: "arduinoUno.standardFirmata.ino.hex",
+    firmware: "arduinoUnoRealtime.ino.standard.hex",
 };
 
 const Pins = {
