@@ -87,7 +87,6 @@ class Scratch3TMPose2ScratchBlocks {
 
         this.confidenceThreshold = 0.5;
 
-        this.runtime.ioDevices.video.enableVideo();
         this.runtime.ioDevices.video.mirror = true;
         this.firstLayer = document.querySelector("canvas");
         this.canvas = document.createElement("canvas");
@@ -484,8 +483,14 @@ class Scratch3TMPose2ScratchBlocks {
     videoToggle(args) {
         const state = args.VIDEO_STATE;
         if (state === "off") {
+<<<<<<< HEAD
             this.runtime.ioDevices.video.setPreviewGhost(100);
         } else {
+=======
+            this.runtime.ioDevices.video.disableVideo();
+        } else {
+            this.runtime.ioDevices.video.enableVideo();
+>>>>>>> 12b85390366019bac7e6a5e653fac347332aa1d4
             this.runtime.ioDevices.video.setPreviewGhost(0);
             this.runtime.ioDevices.video.mirror = state === "on";
         }

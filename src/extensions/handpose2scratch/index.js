@@ -126,7 +126,6 @@ class Scratch3Handpose2ScratchBlocks {
                 });
             });
         };
-        this.runtime.ioDevices.video.enableVideo().then(this.detectHand);
     }
 
     get EXTENSION_ID() {

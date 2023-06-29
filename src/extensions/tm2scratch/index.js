@@ -113,10 +113,6 @@ class tm2scratchBlocks {
 
         this.canvas = document.querySelector("canvas");
 
-        this.runtime.ioDevices.video.enableVideo().then(() => {
-            this.input = this.runtime.ioDevices.video.provider.video;
-        });
-
         this.timer = setInterval(() => {
             this.classifyVideoImage();
         }, this.minInterval);
@@ -681,7 +677,13 @@ class tm2scratchBlocks {
         if (state === "off") {
             this.runtime.ioDevices.video.disableVideo();
         } else {
+<<<<<<< HEAD
             this.runtime.ioDevices.video.enableVideo();
+=======
+            this.runtime.ioDevices.video.enableVideo().then(() => {
+                this.input = this.runtime.ioDevices.video.provider.video;
+            });
+>>>>>>> 12b85390366019bac7e6a5e653fac347332aa1d4
             this.globalVideoTransparency = transparency;
             this.runtime.ioDevices.video.setPreviewGhost(transparency);
             this.runtime.ioDevices.video.mirror = state === "on";
