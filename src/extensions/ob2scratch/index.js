@@ -76,6 +76,7 @@ class OB2ScratchBlocks {
             this.firstLayer.nextSibling
         );
         this.ctx = this.canvas.getContext("2d");
+        this.runtime.ioDevices.video.enableVideo();
 
         this.confidenceThreshold = 0.5;
         this.showBounding = true;

@@ -677,9 +677,7 @@ class tm2scratchBlocks {
         if (state === "off") {
             this.runtime.ioDevices.video.disableVideo();
         } else {
-            this.runtime.ioDevices.video.enableVideo().then(() => {
-                this.input = this.runtime.ioDevices.video.provider.video;
-            });
+            this.runtime.ioDevices.video.enableVideo();
             this.globalVideoTransparency = transparency;
             this.runtime.ioDevices.video.setPreviewGhost(transparency);
             this.runtime.ioDevices.video.mirror = state === "on";

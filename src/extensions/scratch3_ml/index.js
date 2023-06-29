@@ -447,7 +447,7 @@ class Scratch3MLScratchBlocks {
         if (stage) {
             return stage.videoTransparency;
         }
-        return 50;
+        return 0;
     }
 
     set globalVideoTransparency(transparency) {

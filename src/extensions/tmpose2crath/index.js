@@ -483,9 +483,8 @@ class Scratch3TMPose2ScratchBlocks {
     videoToggle(args) {
         const state = args.VIDEO_STATE;
         if (state === "off") {
-            this.runtime.ioDevices.video.disableVideo();
+            this.runtime.ioDevices.video.setPreviewGhost(100);
         } else {
-            this.runtime.ioDevices.video.enableVideo();
             this.runtime.ioDevices.video.setPreviewGhost(0);
             this.runtime.ioDevices.video.mirror = state === "on";
         }
