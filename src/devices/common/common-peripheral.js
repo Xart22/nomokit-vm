@@ -5,6 +5,7 @@ const Serialport = require("../../io/serialport");
 const Base64Util = require("../../util/base64-util");
 
 const Firmata = require("../../lib/firmata/firmata");
+const MicrobitFirmataClient = require("../../lib/firmata/MBFirmataClient");
 
 /**
  * A string to report connect firmata timeout.
@@ -141,6 +142,7 @@ class CommonPeripheral {
         this._motor2 = null;
         this._motor3 = null;
         this._motor4 = null;
+        this._firmataMicrobit = null;
     }
 
     /**
@@ -223,6 +225,7 @@ class CommonPeripheral {
         }
         if (this._serialport) {
             this._serialport.connectPeripheral(id, { config: config });
+            this._firmataMicrobit = new MicrobitFirmataClient(this._serialport);
         }
     }
 
@@ -431,7 +434,6 @@ class CommonPeripheral {
      */
     _onConnect() {
         this._serialport.read(this._onMessage);
-
         this._startHeartbeat();
 
         this._runtime.on(
