@@ -1,7 +1,6 @@
-const JSONRPC = require('../util/jsonrpc');
+const JSONRPC = require("../util/jsonrpc");
 
 class Serialport extends JSONRPC {
-
     /**
      * A serialport peripheral socket object.  It handles connecting, over web sockets, to
      * serialport peripherals, and reading and writing data to them.
@@ -11,10 +10,16 @@ class Serialport extends JSONRPC {
      * @param {object} connectCallback - a callback for connection.
      * @param {object} resetCallback - a callback for resetting extension state.
      */
-    constructor (runtime, deviceId, peripheralOptions, connectCallback = null, resetCallback = null) {
+    constructor(
+        runtime,
+        deviceId,
+        peripheralOptions,
+        connectCallback = null,
+        resetCallback = null
+    ) {
         super();
 
-        this._socket = runtime.getScratchLinkSocket('SERIALPORT');
+        this._socket = runtime.getScratchLinkSocket("SERIALPORT");
         this._socket.setOnOpen(this.requestPeripheral.bind(this));
         this._socket.setOnClose(this.handleDisconnectError.bind(this));
         this._socket.setOnError(this._handleRequestError.bind(this));
@@ -39,16 +44,20 @@ class Serialport extends JSONRPC {
      * Request connection to the peripheral.
      * If the web socket is not yet open, request when the socket promise resolves.
      */
-    requestPeripheral () {
+    requestPeripheral() {
         this._availablePeripherals = {};
         if (this._discoverTimeoutID) {
             window.clearTimeout(this._discoverTimeoutID);
         }
-        this._discoverTimeoutID = window.setTimeout(this._handleDiscoverTimeout.bind(this), 15000);
-        this.sendRemoteRequest('discover', this._peripheralOptions)
-            .catch(e => {
+        this._discoverTimeoutID = window.setTimeout(
+            this._handleDiscoverTimeout.bind(this),
+            15000
+        );
+        this.sendRemoteRequest("discover", this._peripheralOptions).catch(
+            (e) => {
                 this._handleRequestError(e);
-            });
+            }
+        );
     }
 
     /**
@@ -57,16 +66,21 @@ class Serialport extends JSONRPC {
      * @param {number} id - the id of the peripheral to connect to
      * @param {object} config - communacation configuration of peripheral
      */
-    connectPeripheral (id, config) {
-        this.sendRemoteRequest('connect', {peripheralId: id, peripheralConfig: config})
+    connectPeripheral(id, config) {
+        this.sendRemoteRequest("connect", {
+            peripheralId: id,
+            peripheralConfig: config,
+        })
             .then(() => {
                 this._connected = true;
-                this._runtime.emit(this._runtime.constructor.PERIPHERAL_CONNECTED);
+                this._runtime.emit(
+                    this._runtime.constructor.PERIPHERAL_CONNECTED
+                );
                 if (this._connectCallback) {
                     this._connectCallback();
                 }
             })
-            .catch(e => {
+            .catch((e) => {
                 this._handleRequestError(e);
             });
     }
@@ -74,7 +88,7 @@ class Serialport extends JSONRPC {
     /**
      * Close the websocket.
      */
-    disconnect () {
+    disconnect() {
         if (this._connected) {
             this._connected = false;
         }
@@ -94,17 +108,18 @@ class Serialport extends JSONRPC {
     /**
      * @return {bool} whether the peripheral is connected.
      */
-    isConnected () {
+    isConnected() {
         return this._connected;
     }
 
-    setBaudrate (baudRate) {
+    setBaudrate(baudRate) {
         if (baudRate) {
-            const params = {baudRate};
-            return this.sendRemoteRequest('updateBaudrate', params)
-                .catch(e => {
+            const params = { baudRate };
+            return this.sendRemoteRequest("updateBaudrate", params).catch(
+                (e) => {
                     this.handleDisconnectError(e);
-                });
+                }
+            );
         }
     }
 
@@ -113,14 +128,13 @@ class Serialport extends JSONRPC {
      * @param {object} onMessage - callback for characteristic change notifications.
      * @return {Promise} - a promise from the remote read request.
      */
-    read (onMessage = null) {
+    read(onMessage = null) {
         if (onMessage) {
             this._onMessage = onMessage;
         }
-        return this.sendRemoteRequest('read')
-            .catch(e => {
-                this.handleDisconnectError(e);
-            });
+        return this.sendRemoteRequest("read").catch((e) => {
+            this.handleDisconnectError(e);
+        });
     }
 
     /**
@@ -129,15 +143,14 @@ class Serialport extends JSONRPC {
      * @param {string} encoding - the message encoding type.
      * @return {Promise} - a promise from the remote send request.
      */
-    write (message, encoding = null) {
-        const params = {message};
+    write(message, encoding = null) {
+        const params = { message };
         if (encoding) {
             params.encoding = encoding;
         }
-        return this.sendRemoteRequest('write', params)
-            .catch(e => {
-                this.handleDisconnectError(e);
-            });
+        return this.sendRemoteRequest("write", params).catch((e) => {
+            this.handleDisconnectError(e);
+        });
     }
 
     /**
@@ -147,16 +160,15 @@ class Serialport extends JSONRPC {
      * @param {string} encoding - the message encoding type.
      * @return {Promise} - a promise from the remote send request.
      */
-    upload (message, config, encoding = null) {
-        const params = {message, config};
+    upload(message, config, encoding = null) {
+        const params = { message, config };
         if (encoding) {
             params.encoding = encoding;
         }
         params.library = this._runtime.getCurrentDeviceExtensionLibrary();
-        return this.sendRemoteRequest('upload', params)
-            .catch(e => {
-                this.handleDisconnectError(e);
-            });
+        return this.sendRemoteRequest("upload", params).catch((e) => {
+            this.handleDisconnectError(e);
+        });
     }
 
     /**
@@ -164,22 +176,20 @@ class Serialport extends JSONRPC {
      * @param {object} config - the configuration of upload process.
      * @return {Promise} - a promise from the remote send request.
      */
-    uploadFirmware (config) {
-        return this.sendRemoteRequest('uploadFirmware', config)
-            .catch(e => {
-                this.handleDisconnectError(e);
-            });
+    uploadFirmware(config) {
+        return this.sendRemoteRequest("uploadFirmware", config).catch((e) => {
+            this.handleDisconnectError(e);
+        });
     }
 
     /**
      * abort the uploading process.
      * @return {Promise} - a promise from the remote send request.
      */
-    abortUpload () {
-        return this.sendRemoteRequest('abortUpload')
-            .catch(e => {
-                this.handleDisconnectError(e);
-            });
+    abortUpload() {
+        return this.sendRemoteRequest("abortUpload").catch((e) => {
+            this.handleDisconnectError(e);
+        });
     }
 
     /**
@@ -188,53 +198,65 @@ class Serialport extends JSONRPC {
      * @param {object} params - a received list of parameters.
      * @return {object} - optional return value.
      */
-    didReceiveCall (method, params) {
+    didReceiveCall(method, params) {
         switch (method) {
-        case 'didDiscoverPeripheral':
-            this._availablePeripherals[params.peripheralId] = params;
-            this._runtime.emit(
-                this._runtime.constructor.PERIPHERAL_LIST_UPDATE,
-                this._availablePeripherals
-            );
-            if (this._discoverTimeoutID) {
-                window.clearTimeout(this._discoverTimeoutID);
-            }
-            break;
-        case 'connectError':
-            this._runtime.emit(this._runtime.constructor.PERIPHERAL_REQUEST_ERROR, {
-                message: params.message
-            });
-            break;
-        case 'peripheralUnplug':
-            this.handleDisconnectError();
-            break;
-        case 'onMessage':
-            if (this._onMessage) {
-                this._onMessage(params.message);
-            }
-            break;
-        case 'uploadStdout':
-            this._runtime.emit(
-                this._runtime.constructor.PERIPHERAL_UPLOAD_STDOUT, {
-                    message: params.message
-                });
-            break;
-        case 'setUploadAbortEnabled':
-            this._runtime.emit(
-                this._runtime.constructor.PERIPHERAL_SET_UPLOAD_ABORT_ENABLED, params);
-            break;
-        case 'uploadError':
-            this._runtime.emit(
-                this._runtime.constructor.PERIPHERAL_UPLOAD_ERROR, {
-                    message: params.message
-                });
-            break;
-        case 'uploadSuccess':
-            this._runtime.emit(
-                this._runtime.constructor.PERIPHERAL_UPLOAD_SUCCESS, params ? params.aborted : false);
-            break;
-        case 'ping':
-            return 42;
+            case "didDiscoverPeripheral":
+                this._availablePeripherals[params.peripheralId] = params;
+                this._runtime.emit(
+                    this._runtime.constructor.PERIPHERAL_LIST_UPDATE,
+                    this._availablePeripherals
+                );
+                if (this._discoverTimeoutID) {
+                    window.clearTimeout(this._discoverTimeoutID);
+                }
+                break;
+            case "connectError":
+                this._runtime.emit(
+                    this._runtime.constructor.PERIPHERAL_REQUEST_ERROR,
+                    {
+                        message: params.message,
+                    }
+                );
+                break;
+            case "peripheralUnplug":
+                this.handleDisconnectError();
+                break;
+            case "onMessage":
+                if (this._onMessage) {
+                    this._onMessage(params.message);
+                }
+                break;
+            case "uploadStdout":
+                this._runtime.emit(
+                    this._runtime.constructor.PERIPHERAL_UPLOAD_STDOUT,
+                    {
+                        message: params.message,
+                    }
+                );
+                break;
+            case "setUploadAbortEnabled":
+                this._runtime.emit(
+                    this._runtime.constructor
+                        .PERIPHERAL_SET_UPLOAD_ABORT_ENABLED,
+                    params
+                );
+                break;
+            case "uploadError":
+                this._runtime.emit(
+                    this._runtime.constructor.PERIPHERAL_UPLOAD_ERROR,
+                    {
+                        message: params.message,
+                    }
+                );
+                break;
+            case "uploadSuccess":
+                this._runtime.emit(
+                    this._runtime.constructor.PERIPHERAL_UPLOAD_SUCCESS,
+                    params ? params.aborted : false
+                );
+                break;
+            case "ping":
+                return 42;
         }
     }
 
@@ -249,7 +271,7 @@ class Serialport extends JSONRPC {
      * Disconnect the socket, and if the extension using this socket has a
      * reset callback, call it. Finally, emit an error to the runtime.
      */
-    handleDisconnectError (/* e */) {
+    handleDisconnectError(/* e */) {
         if (!this._connected) return;
 
         this.disconnect();
@@ -258,10 +280,13 @@ class Serialport extends JSONRPC {
             this._resetCallback();
         }
 
-        this._runtime.emit(this._runtime.constructor.PERIPHERAL_CONNECTION_LOST_ERROR, {
-            message: `Scratch lost connection to`,
-            deviceId: this._deviceId
-        });
+        this._runtime.emit(
+            this._runtime.constructor.PERIPHERAL_CONNECTION_LOST_ERROR,
+            {
+                message: `Scratch lost connection to`,
+                deviceId: this._deviceId,
+            }
+        );
     }
 
     /**
@@ -272,25 +297,31 @@ class Serialport extends JSONRPC {
      * - peripheral is not running.
      * @param {string} e - error message.
      */
-    handleRealtimeDisconnectError (e) {
-        this._runtime.emit(this._runtime.constructor.PERIPHERAL_REALTIME_CONNECTION_LOST_ERROR, {
-            message: e,
-            deviceId: this._deviceId
-        });
+    handleRealtimeDisconnectError(e) {
+        // this._runtime.emit(
+        //     this._runtime.constructor.PERIPHERAL_REALTIME_CONNECTION_LOST_ERROR,
+        //     {
+        //         message: e,
+        //         deviceId: this._deviceId,
+        //     }
+        // );
     }
 
-    handleRealtimeConnectSucess () {
-        this._runtime.emit(this._runtime.constructor.PERIPHERAL_REALTIME_CONNECT_SUCCESS, {deviceId: this._deviceId});
+    handleRealtimeConnectSucess() {
+        this._runtime.emit(
+            this._runtime.constructor.PERIPHERAL_REALTIME_CONNECT_SUCCESS,
+            { deviceId: this._deviceId }
+        );
     }
 
-    _handleRequestError (/* e */) {
+    _handleRequestError(/* e */) {
         this._runtime.emit(this._runtime.constructor.PERIPHERAL_REQUEST_ERROR, {
             message: `Scratch lost connection to`,
-            deviceId: this._deviceId
+            deviceId: this._deviceId,
         });
     }
 
-    _handleDiscoverTimeout () {
+    _handleDiscoverTimeout() {
         if (this._discoverTimeoutID) {
             window.clearTimeout(this._discoverTimeoutID);
         }
