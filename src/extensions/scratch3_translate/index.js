@@ -112,60 +112,62 @@ class Scratch3TranslateBlocks {
                 Math.floor(Math.random() * this._supportedLanguages.length)
             ].value;
 
-        return {
-            id: "translate",
-            name: formatMessage({
-                id: "translate.categoryName",
-                default: "Translate",
-                description: "Name of extension that adds translate blocks",
-            }),
-            blockIconURI: blockIconURI,
-            menuIconURI: menuIconURI,
-            blocks: [
-                {
-                    opcode: "getTranslate",
-                    text: formatMessage({
-                        id: "translate.translateBlock",
-                        default: "translate [WORDS] to [LANGUAGE]",
-                        description:
-                            "translate some text to a different language",
-                    }),
-                    blockType: BlockType.REPORTER,
-                    arguments: {
-                        WORDS: {
-                            type: ArgumentType.STRING,
-                            defaultValue: formatMessage({
-                                id: "translate.defaultTextToTranslate",
-                                default: "hello",
-                                description:
-                                    "hello: the default text to translate",
-                            }),
-                        },
-                        LANGUAGE: {
-                            type: ArgumentType.STRING,
-                            menu: "languages",
-                            defaultValue: this._randomLanguageCode,
+        return [
+            {
+                id: "translate",
+                name: formatMessage({
+                    id: "translate.categoryName",
+                    default: "Translate",
+                    description: "Name of extension that adds translate blocks",
+                }),
+                blockIconURI: blockIconURI,
+                menuIconURI: menuIconURI,
+                blocks: [
+                    {
+                        opcode: "getTranslate",
+                        text: formatMessage({
+                            id: "translate.translateBlock",
+                            default: "translate [WORDS] to [LANGUAGE]",
+                            description:
+                                "translate some text to a different language",
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                            WORDS: {
+                                type: ArgumentType.STRING,
+                                defaultValue: formatMessage({
+                                    id: "translate.defaultTextToTranslate",
+                                    default: "hello",
+                                    description:
+                                        "hello: the default text to translate",
+                                }),
+                            },
+                            LANGUAGE: {
+                                type: ArgumentType.STRING,
+                                menu: "languages",
+                                defaultValue: this._randomLanguageCode,
+                            },
                         },
                     },
-                },
-                {
-                    opcode: "getViewerLanguage",
-                    text: formatMessage({
-                        id: "translate.viewerLanguage",
-                        default: "language",
-                        description: "the languge of the project viewer",
-                    }),
-                    blockType: BlockType.REPORTER,
-                    arguments: {},
-                },
-            ],
-            menus: {
-                languages: {
-                    acceptReporters: true,
-                    items: this._supportedLanguages,
+                    {
+                        opcode: "getViewerLanguage",
+                        text: formatMessage({
+                            id: "translate.viewerLanguage",
+                            default: "language",
+                            description: "the languge of the project viewer",
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {},
+                    },
+                ],
+                menus: {
+                    languages: {
+                        acceptReporters: true,
+                        items: this._supportedLanguages,
+                    },
                 },
             },
-        };
+        ];
     }
 
     /**
