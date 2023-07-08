@@ -43,6 +43,12 @@ const FrimataReadTimeout = 2000;
 /**
  * Manage communication with a common peripheral over a OpenBlock Link client socket.
  */
+
+const Mode = {
+    Input: "INPUT",
+    Output: "OUTPUT",
+    InputPullup: "INPUT_PULLUP",
+};
 class CommonPeripheral {
     /**
      * Construct a common communication object.

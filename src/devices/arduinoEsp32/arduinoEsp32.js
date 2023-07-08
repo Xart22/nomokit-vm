@@ -1621,7 +1621,7 @@ class OpenBlockArduinoEsp32Device {
                 },
             },
             {
-                id: "pin",
+                id: "pinRealtime",
                 name: formatMessage({
                     id: "arduinoEsp32.category.pins",
                     default: "Pins",
