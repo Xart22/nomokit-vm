@@ -10,7 +10,7 @@ const BlockType = require("./block-type");
 
 // Local resources server address
 const localResourcesServerUrl = "https://nomopro.nomo-kit.com/";
-//const localResourcesServerUrl = "http://127.0.0.1:20113/";
+// const localResourcesServerUrl = "http://127.0.0.1:20113/";
 //const localResourcesServerUrl = "https://nomobase.nomo-kit.com/";
 
 // These extensions are currently built into the VM repository but should not be loaded at startup.
@@ -44,6 +44,7 @@ const builtinDevices = {
     arduinoNanoNobot: () => require("../devices/arduinoUno/arduinoNanoNobot"),
     arduinoUnoUltra: () => require("../devices/arduinoUno/arduinoUnoUltra"),
     arduinoUnoSE: () => require("../devices/arduinoUno/arduinoUnoSE"),
+    arduinoELFUno: () => require("../devices/arduinoUno/arduinoELFUno"),
     // Arduino Leonardo
     arduinoLeonardo: () =>
         require("../devices/arduinoLeonardo/arduinoLeonardo"),
