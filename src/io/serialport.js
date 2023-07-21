@@ -67,27 +67,22 @@ class Serialport extends JSONRPC {
      * @param {object} config - communacation configuration of peripheral
      */
     connectPeripheral(id, config) {
-        this._connected = true;
-        this._runtime.emit(this._runtime.constructor.PERIPHERAL_CONNECTED);
-        if (this._connectCallback) {
-            this._connectCallback();
-        }
-        // this.sendRemoteRequest("connect", {
-        //     peripheralId: id,
-        //     peripheralConfig: config,
-        // })
-        //     .then(() => {
-        //         this._connected = true;
-        //         this._runtime.emit(
-        //             this._runtime.constructor.PERIPHERAL_CONNECTED
-        //         );
-        //         if (this._connectCallback) {
-        //             this._connectCallback();
-        //         }
-        //     })
-        //     .catch((e) => {
-        //         this._handleRequestError(e);
-        //     });
+        this.sendRemoteRequest("connect", {
+            peripheralId: id,
+            peripheralConfig: config,
+        })
+            .then(() => {
+                this._connected = true;
+                this._runtime.emit(
+                    this._runtime.constructor.PERIPHERAL_CONNECTED
+                );
+                if (this._connectCallback) {
+                    this._connectCallback();
+                }
+            })
+            .catch((e) => {
+                this._handleRequestError(e);
+            });
     }
 
     /**

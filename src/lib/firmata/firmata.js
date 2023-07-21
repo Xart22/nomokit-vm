@@ -96,9 +96,6 @@ const decode32BitSignedInteger = function (bytes) {
  *                       wrapped in a Buffer and written to the transport.
  */
 const writeToTransport = function (board, data) {
-    console.log("writeToTransport", data);
-    window.flutter_inappwebview.callHandler("writeToTransport", data);
-
     board.transportWrite(data);
 };
 
@@ -715,9 +712,7 @@ class Firmata extends Emitter {
             /* istanbul ignore else */
             if (this.versionReceived === false) {
                 this.reportVersion(() => {});
-                this.queryFirmware(() => {
-                    console.log("Firmware name: %s", this.firmware.name);
-                });
+                this.queryFirmware(() => {});
             }
         }, settings.reportVersionTimeout);
 
@@ -880,6 +875,7 @@ class Firmata extends Emitter {
     }
 
     setRelayEsp32(pin, value) {
+        console.log(`RELAY,${pin},${value}`);
         this.sendString(`RELAY,${pin},${value}`);
     }
 
