@@ -153,6 +153,22 @@ class ArduinoPeripheral {
         this._motor2 = null;
         this._motor3 = null;
         this._motor4 = null;
+        this.bindingEvent();
+    }
+
+    bindingEvent() {
+        window.addEventListener(
+            "message",
+            (event) => {
+                if (event.data == "CONNECTED") {
+                    this._firmata = new Firmata(this.send.bind(this));
+                    this._isFirmataConnected = true;
+                } else {
+                    this._onMessage(event.data);
+                }
+            },
+            false
+        );
     }
 
     /**
@@ -324,9 +340,9 @@ class ArduinoPeripheral {
                 // Start a timeout to report that firmata did not receive the ready event.
                 // This happens after connecting to a device that is not running the firmata service.
                 this._firmataReadyTimeoutID = window.setTimeout(() => {
-                    this._serialport.handleRealtimeDisconnectError(
-                        ConnectFirmataTimeout
-                    );
+                    // this._serialport.handleRealtimeDisconnectError(
+                    //     ConnectFirmataTimeout
+                    // );
                 }, FirmataReadyTimeout);
 
                 this._firmata = new Firmata(this.send.bind(this));
@@ -338,7 +354,7 @@ class ArduinoPeripheral {
 
                     // Receiving a ready event indicates that the firmata service has been initialized.
                     this._isFirmataConnected = true;
-                    this._serialport.handleRealtimeConnectSucess();
+                    // this._serialport.handleRealtimeConnectSucess();
 
                     // Start the heartbeat listener.
                     this._firmata.on("reportversion", this._listenHeartbeat);
@@ -440,7 +456,8 @@ class ArduinoPeripheral {
      * @private
      */
     _onConnect() {
-        this._serialport.read(this._onMessage);
+        console.log("serialport connected");
+        // this._serialport.read(this._onMessage);
 
         this._startHeartbeat();
 
@@ -477,6 +494,7 @@ class ArduinoPeripheral {
      * @return {boolean} - whether the peripheral is ready for realtime mode communication.
      */
     isReady() {
+        console.log("isReady", this._isFirmataConnected);
         if (this._runtime.isRealtimeMode() && this._isFirmataConnected) {
             return true;
         }
@@ -711,6 +729,7 @@ class ArduinoPeripheral {
         if (this.isReady()) {
             trigPin = this.parsePin(trigPin).toString();
             echoPin = this.parsePin(echoPin).toString();
+
             return new Promise((resolve) => {
                 this._firmata.reportUltrasonicDistance(
                     trigPin,

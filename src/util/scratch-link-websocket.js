@@ -32,7 +32,7 @@ class ScratchLinkWebSocket {
                 break;
             case "SERIALPORT":
                 this._ws = new WebSocket(
-                    "wss://127.0.0.1:20111/openblock/serialport"
+                    "ws://127.0.0.1:20111/openblock/serialport"
                 );
                 break;
             default:
