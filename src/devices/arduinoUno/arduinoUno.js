@@ -659,7 +659,7 @@ class OpenBlockArduinoUnoDevice {
                                 defaultValue: Pins.D3,
                             },
                             OUT: {
-                                type: ArgumentType.UINT8_NUMBER,
+                                type: ArgumentType.NUMBER,
                                 defaultValue: "255",
                             },
                         },
