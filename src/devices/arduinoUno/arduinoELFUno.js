@@ -1754,15 +1754,19 @@ class OpenBlockArduinoUnoDevice {
 
     printLcd(args) {
         this._peripheral.printLcd(args.TEXT);
+        return Promise.resolve();
     }
     setCursor(args) {
         this._peripheral.setCursor(args.COL, args.ROW);
+        return Promise.resolve();
     }
     clearLcd() {
         this._peripheral.clearLcd();
+        return Promise.resolve();
     }
     setModeLcd(args) {
         this._peripheral.setModeLcd(args.MODE);
+        return Promise.resolve();
     }
 }
 

@@ -785,7 +785,7 @@ class Firmata extends Emitter {
         this.once("string", (message) => {
             if (message.includes("DHT-")) {
                 const data = message.split("-");
-                callback(data[1] == "nan" ? 0 : data[1]);
+                callback(data[1].includes("N") ? 0 : data[1]);
             }
         });
         this.sendString(`DHT,${type},${sensor},${pin}`);
@@ -875,7 +875,6 @@ class Firmata extends Emitter {
     }
 
     setRelayEsp32(pin, value) {
-        console.log(`RELAY,${pin},${value}`);
         this.sendString(`RELAY,${pin},${value}`);
     }
 
@@ -1259,7 +1258,6 @@ class Firmata extends Emitter {
             data.push(bytes[i] & 0x7f, (bytes[i] >> 7) & 0x7f);
         }
         data.push(END_SYSEX);
-
         writeToTransport(this, data);
     }
 

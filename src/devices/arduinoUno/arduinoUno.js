@@ -1733,7 +1733,19 @@ class OpenBlockArduinoUnoDevice {
     }
 
     getDhtValue(args) {
-        return this._peripheral.getDhtValue(args.TYPE, args.SENSOR, args.PIN);
+        if (args.TYPE != "DHT11") {
+            return this._peripheral.getDhtValue(
+                args.TYPE,
+                args.SENSOR.toLowerCase(),
+                args.PIN
+            );
+        } else {
+            return this._peripheral.getDhtValue(
+                args.TYPE,
+                args.SENSOR,
+                args.PIN
+            );
+        }
     }
     readAnalogSensor(args) {
         return this._peripheral.readAnalogSensor(args.PIN);
@@ -1754,15 +1766,19 @@ class OpenBlockArduinoUnoDevice {
 
     printLcd(args) {
         this._peripheral.printLcd(args.TEXT);
+        return Promise.resolve();
     }
     setCursor(args) {
         this._peripheral.setCursor(args.COL, args.ROW);
+        return Promise.resolve();
     }
     clearLcd() {
         this._peripheral.clearLcd();
+        return Promise.resolve();
     }
     setModeLcd(args) {
         this._peripheral.setModeLcd(args.MODE);
+        return Promise.resolve();
     }
 }
 
