@@ -1187,7 +1187,7 @@ class OpenBlockArduinoUnoDevice {
                         programMode: [ProgramModeType.REALTIME],
                     },
                     {
-                        opcode: "readDigitalSensor",
+                        opcode: "readDigitalPin",
                         text: formatMessage({
                             id: "arduinoUno.pins.readDigitalSensor",
                             default: "read digital sensor [SENSOR] pin [PIN]",

@@ -564,6 +564,7 @@ class ArduinoPeripheral {
     readDigitalPin(pin) {
         if (this.isReady()) {
             pin = this.parsePin(pin);
+            this._firmata.pinMode(pin, this._firmata.MODES.INPUT);
             return new Promise((resolve) => {
                 this._firmata.digitalRead(pin, (value) => {
                     resolve(value);
