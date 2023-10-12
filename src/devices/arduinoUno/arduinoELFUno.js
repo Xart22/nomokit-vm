@@ -1744,26 +1744,26 @@ class OpenBlockArduinoUnoDevice {
                         },
                         programMode: [ProgramModeType.REALTIME],
                     },
-                    {
-                        opcode: "setOnBoardLed",
-                        text: formatMessage({
-                            id: "arduinoUno.lcd.setOnBoardLed",
-                            default: "Set On board LED CH [CH] color [COLOR]",
-                            description: "arduinoUno set led",
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            CH: {
-                                type: ArgumentType.STRING,
-                                menu: "ch",
-                                defaultValue: 0,
-                            },
-                            COLOR: {
-                                type: ArgumentType.COLOR,
-                            },
-                        },
-                        programMode: [ProgramModeType.REALTIME],
-                    },
+                    // {
+                    //     opcode: "setOnBoardLed",
+                    //     text: formatMessage({
+                    //         id: "arduinoUno.lcd.setOnBoardLed",
+                    //         default: "Set On board LED CH [CH] color [COLOR]",
+                    //         description: "arduinoUno set led",
+                    //     }),
+                    //     blockType: BlockType.COMMAND,
+                    //     arguments: {
+                    //         CH: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: "ch",
+                    //             defaultValue: 0,
+                    //         },
+                    //         COLOR: {
+                    //             type: ArgumentType.COLOR,
+                    //         },
+                    //     },
+                    //     programMode: [ProgramModeType.REALTIME],
+                    // },
                 ],
                 menus: {
                     pins: {
@@ -1931,11 +1931,11 @@ class OpenBlockArduinoUnoDevice {
         return Promise.resolve();
     }
 
-    setOnBoardLed(args) {
-        const color = this.hex2rgb(args.COLOR);
-        this._peripheral.setOnBoardLed(args.CH, color);
-        return Promise.resolve();
-    }
+    // setOnBoardLed(args) {
+    //     const color = this.hex2rgb(args.COLOR);
+    //     this._peripheral.setOnBoardLed(args.CH1, color);
+    //     return Promise.resolve();
+    // }
 
     hex2rgb(hex) {
         hex = hex.replace("#", "");
