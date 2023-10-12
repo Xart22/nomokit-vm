@@ -13,6 +13,8 @@ const blockSensorIconURI =
 
 const blockLcdIconURI =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUcAAAFHCAYAAAAySY5rAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAEzmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4yLWMwMDAgMTE2LmRlZTNhNzcsIDIwMjIvMDkvMDEtMTM6NTc6MDggICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMy0wNi0yNVQxODo1MTo1NSswNzowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjMtMDYtMjVUMTg6NTM6MDMrMDc6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjMtMDYtMjVUMTg6NTM6MDMrMDc6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjY1MzdiYTY5LWFjMjUtYzM0My1iYmFhLTBjODhhZDllZTBmNiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo2NTM3YmE2OS1hYzI1LWMzNDMtYmJhYS0wYzg4YWQ5ZWUwZjYiIHht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";
+const lcdIconURI =
+    "data:image/jpeg;base64,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";
 /**
  * The list of USB device filters.
  * @readonly
@@ -1221,12 +1223,12 @@ class OpenBlockArduinoUnoDevice {
                             TYPE: {
                                 type: ArgumentType.STRING,
                                 menu: "dhtTypes",
-                                defaultValue: "DHT11",
+                                defaultValue: "11",
                             },
                             SENSOR: {
                                 type: ArgumentType.STRING,
                                 menu: "dhtSensors",
-                                defaultValue: "Temperature",
+                                defaultValue: "1",
                             },
                             PIN: {
                                 type: ArgumentType.STRING,
@@ -1254,28 +1256,6 @@ class OpenBlockArduinoUnoDevice {
                                 type: ArgumentType.STRING,
                                 menu: "analogPins",
                                 defaultValue: Pins.A0,
-                            },
-                        },
-                        programMode: [ProgramModeType.REALTIME],
-                    },
-
-                    {
-                        opcode: "setLedOnBoard",
-                        text: formatMessage({
-                            id: "arduinoUno.pins.setLedOnBoard",
-                            default: "LED [CH] color  [COLOR]",
-                            description: "arduinoUno setLedOnBoard",
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            CH: {
-                                type: ArgumentType.STRING,
-                                menu: "ledCh",
-                                defaultValue: "0",
-                            },
-
-                            COLOR: {
-                                type: ArgumentType.COLOR,
                             },
                         },
                         programMode: [ProgramModeType.REALTIME],
@@ -1372,11 +1352,11 @@ class OpenBlockArduinoUnoDevice {
                         items: [
                             {
                                 text: "Temperature",
-                                value: "Temperature",
+                                value: "1",
                             },
                             {
                                 text: "Humidity",
-                                value: "Humidity",
+                                value: "2",
                             },
                         ],
                     },
@@ -1384,11 +1364,11 @@ class OpenBlockArduinoUnoDevice {
                         items: [
                             {
                                 text: "DHT11",
-                                value: "DHT11",
+                                value: "11",
                             },
                             {
                                 text: "DHT22",
-                                value: "DHT22",
+                                value: "22",
                             },
                         ],
                     },
@@ -1493,24 +1473,25 @@ class OpenBlockArduinoUnoDevice {
                     },
                     ringtones: {
                         items: [
-                            { text: "connection", value: "connection" },
-                            { text: "disconnection", value: "disconnection" },
-                            { text: "didi", value: "didi" },
-                            { text: "mode1", value: "mode1" },
-                            { text: "mode2", value: "mode2" },
-                            { text: "mode3", value: "mode3" },
-                            { text: "OhOoh", value: "OhOoh" },
-                            { text: "OhOoh2", value: "OhOoh2" },
-                            { text: "cuddly", value: "cuddly" },
-                            { text: "sleeping", value: "sleeping" },
-                            { text: "happy", value: "happy" },
-                            { text: "super happy", value: "superhappy" },
-                            { text: "happy short", value: "happyshort" },
-                            { text: "sad", value: "sad" },
-                            { text: "confused", value: "confused" },
-                            { text: "fart1", value: "fart1" },
-                            { text: "fart2", value: "fart2" },
-                            { text: "fart3", value: "fart3" },
+                            { text: "connection", value: "1" },
+                            { text: "disconnection", value: "2" },
+                            { text: "didi", value: "3" },
+                            { text: "mode1", value: "4" },
+                            { text: "mode2", value: "5" },
+                            { text: "mode3", value: "6" },
+                            { text: "surprise", value: "7" },
+                            { text: "OhOoh", value: "8" },
+                            { text: "OhOoh2", value: "9" },
+                            { text: "cuddly", value: "10" },
+                            { text: "sleeping", value: "11" },
+                            { text: "happy", value: "12" },
+                            { text: "super happy", value: "13" },
+                            { text: "happy short", value: "14" },
+                            { text: "sad", value: "15" },
+                            { text: "confused", value: "16" },
+                            { text: "fart1", value: "17" },
+                            { text: "fart2", value: "18" },
+                            { text: "fart3", value: "19" },
                         ],
                     },
                 },
@@ -1658,93 +1639,6 @@ class OpenBlockArduinoUnoDevice {
                     pins: {
                         items: this.PINS_MENU,
                     },
-                    mode: {
-                        items: this.MODE_MENU,
-                    },
-                    analogPins: {
-                        items: this.ANALOG_PINS_MENU,
-                    },
-                    level: {
-                        acceptReporters: true,
-                        items: this.LEVEL_MENU,
-                    },
-                    pwmPins: {
-                        items: this.PWM_PINS_MENU,
-                    },
-                    interruptPins: {
-                        items: this.INTERRUPT_PINS_MENU,
-                    },
-                    interruptMode: {
-                        items: this.INTERRUP_MODE_MENU,
-                    },
-                    motor: {
-                        items: this.MOTOR_MENU,
-                    },
-                    motorDirection: {
-                        items: this.MOTOR_DIRECTION_MENU,
-                    },
-                    iorelay: {
-                        items: this.IO_RELAY_MENU,
-                    },
-                    digitalSensors: {
-                        items: this.DIGITAL_SENSOR_MENU,
-                    },
-                    dhtSensors: {
-                        items: [
-                            {
-                                text: "Temperature",
-                                value: "Temperature",
-                            },
-                            {
-                                text: "Humidity",
-                                value: "Humidity",
-                            },
-                        ],
-                    },
-                    dhtTypes: {
-                        items: [
-                            {
-                                text: "DHT11",
-                                value: "DHT11",
-                            },
-                            {
-                                text: "DHT22",
-                                value: "DHT22",
-                            },
-                        ],
-                    },
-                    analogSensors: {
-                        items: [
-                            {
-                                text: "Light",
-                                value: "light",
-                            },
-                            {
-                                text: "Soil Moisture",
-                                value: "soil moisture",
-                            },
-                            {
-                                text: "Sound / Microphone",
-                                value: "sound",
-                            },
-                            {
-                                text: "Gas",
-                                value: "gas",
-                            },
-                            {
-                                text: "Joystick X",
-                                value: "joystick x",
-                            },
-                            {
-                                text: "Joystick Y",
-                                value: "joystick y",
-                            },
-                            {
-                                text: "Generic",
-                                value: "generic",
-                            },
-                        ],
-                    },
                     lcdColumns: {
                         items: [...Array(16).keys()].map((i) => ({
                             text: (1 + i).toString(),
@@ -1761,44 +1655,131 @@ class OpenBlockArduinoUnoDevice {
                         items: [
                             {
                                 text: "Blink",
-                                value: "BLINK",
+                                value: "1",
                             },
                             {
                                 text: "No Blink",
-                                value: "NOBLINK",
+                                value: "2",
                             },
                             {
                                 text: "Cursor",
-                                value: "CURSOR",
+                                value: "3",
                             },
                             {
                                 text: "No Cursor",
-                                value: "NOCURSOR",
+                                value: "4",
                             },
                             {
                                 text: "Display",
-                                value: "DISPLAY",
+                                value: "5",
                             },
                             {
                                 text: "No Display",
-                                value: "NODISPLAY",
+                                value: "6",
                             },
                             {
                                 text: "Autoscroll",
-                                value: "AUTOSCROLL",
+                                value: "7",
                             },
                             {
                                 text: "No Autoscroll",
-                                value: "NOAUTOSCROLL",
+                                value: "8",
                             },
                             {
                                 text: "Scroll Display Left",
-                                value: "SCROLLDISPLAYLEFT",
+                                value: "9",
                             },
                             {
                                 text: "Scroll Display Right",
-                                value: "SCROLLDISPLAYRIGHT",
+                                value: "10",
                             },
+                        ],
+                    },
+                },
+            },
+            {
+                id: "led",
+                name: formatMessage({
+                    id: "arduinoUno.category.led",
+                    default: "LED",
+                    description:
+                        "The name of the arduinoUno extension category for LED.",
+                }),
+                blockIconURI: lcdIconURI,
+                color1: "#bcbf63",
+                blocks: [
+                    {
+                        opcode: "setLed",
+                        text: formatMessage({
+                            id: "arduinoUno.lcd.setLed",
+                            default:
+                                "Set LED type[TYPE] R pin[R] G pin[G] B pin[B] color [COLOR]",
+                            description: "arduinoUno set led",
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            TYPE: {
+                                type: ArgumentType.STRING,
+                                menu: "type",
+                                defaultValue: "A",
+                            },
+                            R: {
+                                type: ArgumentType.STRING,
+                                menu: "pins",
+                                defaultValue: Pins.D8,
+                            },
+                            G: {
+                                type: ArgumentType.STRING,
+                                menu: "pins",
+                                defaultValue: Pins.D9,
+                            },
+                            B: {
+                                type: ArgumentType.STRING,
+                                menu: "pins",
+                                defaultValue: Pins.D4,
+                            },
+                            COLOR: {
+                                type: ArgumentType.COLOR,
+                            },
+                        },
+                        programMode: [ProgramModeType.REALTIME],
+                    },
+                    {
+                        opcode: "setOnBoardLed",
+                        text: formatMessage({
+                            id: "arduinoUno.lcd.setOnBoardLed",
+                            default: "Set On board LED CH [CH] color [COLOR]",
+                            description: "arduinoUno set led",
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            CH: {
+                                type: ArgumentType.STRING,
+                                menu: "ch",
+                                defaultValue: 0,
+                            },
+                            COLOR: {
+                                type: ArgumentType.COLOR,
+                            },
+                        },
+                        programMode: [ProgramModeType.REALTIME],
+                    },
+                ],
+                menus: {
+                    pins: {
+                        items: this.PINS_MENU,
+                    },
+                    type: {
+                        items: [
+                            { text: "Anode", value: "A" },
+                            { text: "Cathode", value: "b" },
+                        ],
+                    },
+                    ch: {
+                        items: [
+                            { text: "both", value: "0" },
+                            { text: "1", value: "1" },
+                            { text: "2", value: "2" },
                         ],
                     },
                 },
@@ -1896,7 +1877,7 @@ class OpenBlockArduinoUnoDevice {
     }
 
     getDhtValue(args) {
-        if (args.TYPE != "DHT11") {
+        if (args.TYPE != "11") {
             return this._peripheral.getDhtValue(
                 args.TYPE,
                 args.SENSOR,
@@ -1944,10 +1925,27 @@ class OpenBlockArduinoUnoDevice {
         return Promise.resolve();
     }
 
-    setLedOnBoard(args) {
-        const color = args.COLOR.replace("#", "0x").toLowerCase();
-        this._peripheral.setLedOnBoard(args.CH, color);
+    setLed(args) {
+        const color = this.hex2rgb(args.COLOR);
+        this._peripheral.setLed(args.R, args.G, args.B, args.TYPE, color);
         return Promise.resolve();
+    }
+
+    setOnBoardLed(args) {
+        const color = this.hex2rgb(args.COLOR);
+        this._peripheral.setOnBoardLed(args.CH, color);
+        return Promise.resolve();
+    }
+
+    hex2rgb(hex) {
+        hex = hex.replace("#", "");
+        const bigint = parseInt(hex, 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+
+        // return {r, g, b}
+        return { r, g, b };
     }
 
     playBuzzerTone(args) {

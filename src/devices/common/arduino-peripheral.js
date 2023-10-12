@@ -918,16 +918,21 @@ class ArduinoPeripheral {
         }
     }
 
-    setLedOnBoard(ch, color) {
-        if (this.isReady()) {
-            return this._firmata.setLedOnBoard(ch, color);
-        }
-    }
-
     playBuzzer(pin, tone, beat, tempo) {
         if (this.isReady()) {
             pin = this.parsePin(pin);
             return this._firmata.playBuzzer(pin, tone, beat, tempo);
+        }
+    }
+
+    setLed(r, g, b, mode, color) {
+        if (this.isReady()) {
+            return this._firmata.setLed(r, g, b, mode, color);
+        }
+    }
+    setOnBoardLed(ch, color) {
+        if (this.isReady()) {
+            return this._firmata.setOnBoardLed(ch, color.r, color.g, color.b);
         }
     }
 }

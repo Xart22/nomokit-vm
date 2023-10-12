@@ -783,35 +783,38 @@ class Firmata extends Emitter {
 
     reportDHTValue(type, sensor, pin, callback) {
         this.once("string", (message) => {
-            console.log(message);
             if (message.includes("DHT-")) {
                 const data = message.split("-");
-                callback(data[1].includes("N") ? 0 : data[1]);
+                if (data[1].includes("N") || data[1].includes("n")) {
+                    callback(0);
+                } else {
+                    callback(data[1]);
+                }
             }
         });
         this.sendString(`DHT,${type},${sensor},${pin}`);
     }
 
     initLcd(rst, en, d4, d5, d6, d7) {
-        this.sendString(`LCDINIT,${rst},${en},${d4},${d5},${d6},${d7}`);
+        this.sendString(`11,${rst},${en},${d4},${d5},${d6},${d7}`);
     }
     initLcdI2C(address) {
         address = parseInt(address, 16);
-        this.sendString(`LCDINITI2C,${address}`);
+        this.sendString(`12,${address}`);
     }
 
     printLcd(message) {
-        this.sendString(`LCDPRINT,${message}`);
+        this.sendString(`P,${message}`);
     }
     setCursor(col, row) {
-        this.sendString(`LCDSETCURSOR,${col},${row}`);
+        this.sendString(`13,${col},${row}`);
     }
     clearLcd() {
-        this.sendString(`LCDCLEAR`);
+        this.sendString(`30`);
     }
 
     setModeLcd(mode) {
-        this.sendString(`LCDSET,${mode}`);
+        this.sendString(`M,${mode}`);
     }
 
     servoEsp32(pin, value) {
@@ -879,15 +882,19 @@ class Firmata extends Emitter {
         this.sendString(`RELAY,${pin},${value}`);
     }
 
-    setLedOnBoard(ch, color) {
-        this.once("string", (message) => {
-            console.log(message);
-        });
-        this.sendString(`SETLCDONBOARD,${ch},${color}`);
-    }
-
     playBuzzer(pin, tone, beat, tempo) {
         this.sendString(`BUZZER,${pin},${tone},${beat},${tempo}`);
+    }
+
+    setLed(r, g, b, mode, color) {
+        console.log(r, g, b, mode, color);
+        this.sendString(
+            `RGB,${r},${g},${b},${mode},${color.r},${color.g},${color.b}`
+        );
+    }
+
+    setOnBoardLed(ch, r, g, b) {
+        this.sendString(`RGBO,${ch},${r},${g},${b}`);
     }
 
     onReciveData(data) {

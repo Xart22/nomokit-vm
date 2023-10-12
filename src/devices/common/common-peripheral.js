@@ -575,11 +575,11 @@ class CommonPeripheral {
             });
         }
     }
-    getDhtValue(sensor, pin) {
+    getDhtValue(type, sensor, pin) {
         if (this.isReady()) {
             pin = this.parsePin(pin);
             return new Promise((resolve) => {
-                this._firmata.reportDHTValue("DHT11", sensor, pin, (value) => {
+                this._firmata.reportDHTValue(type, sensor, pin, (value) => {
                     resolve(value);
                 });
                 window.setTimeout(() => {
@@ -718,6 +718,19 @@ class CommonPeripheral {
     setRelayEsp32(pin, value) {
         if (this.isReady()) {
             this._firmata.setRelayEsp32(pin, value);
+        }
+    }
+
+    playBuzzer(pin, tone, beat, tempo) {
+        if (this.isReady()) {
+            pin = this.parsePin(pin);
+            return this._firmata.playBuzzer(pin, tone, beat, tempo);
+        }
+    }
+
+    setLed(r, g, b, mode, color) {
+        if (this.isReady()) {
+            return this._firmata.setLed(r, g, b, mode, color);
         }
     }
 }
