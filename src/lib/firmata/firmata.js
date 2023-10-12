@@ -783,6 +783,7 @@ class Firmata extends Emitter {
 
     reportDHTValue(type, sensor, pin, callback) {
         this.once("string", (message) => {
+            console.log(message);
             if (message.includes("DHT-")) {
                 const data = message.split("-");
                 callback(data[1].includes("N") ? 0 : data[1]);
@@ -876,6 +877,17 @@ class Firmata extends Emitter {
 
     setRelayEsp32(pin, value) {
         this.sendString(`RELAY,${pin},${value}`);
+    }
+
+    setLedOnBoard(ch, color) {
+        this.once("string", (message) => {
+            console.log(message);
+        });
+        this.sendString(`SETLCDONBOARD,${ch},${color}`);
+    }
+
+    playBuzzer(pin, tone, beat, tempo) {
+        this.sendString(`BUZZER,${pin},${tone},${beat},${tempo}`);
     }
 
     onReciveData(data) {

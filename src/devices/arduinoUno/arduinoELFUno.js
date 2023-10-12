@@ -1187,7 +1187,7 @@ class OpenBlockArduinoUnoDevice {
                         programMode: [ProgramModeType.REALTIME],
                     },
                     {
-                        opcode: "readDigitalSensor",
+                        opcode: "readDigitalPin",
                         text: formatMessage({
                             id: "arduinoUno.pins.readDigitalSensor",
                             default: "read digital sensor [SENSOR] pin [PIN]",
@@ -1254,6 +1254,80 @@ class OpenBlockArduinoUnoDevice {
                                 type: ArgumentType.STRING,
                                 menu: "analogPins",
                                 defaultValue: Pins.A0,
+                            },
+                        },
+                        programMode: [ProgramModeType.REALTIME],
+                    },
+
+                    {
+                        opcode: "setLedOnBoard",
+                        text: formatMessage({
+                            id: "arduinoUno.pins.setLedOnBoard",
+                            default: "LED [CH] color  [COLOR]",
+                            description: "arduinoUno setLedOnBoard",
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            CH: {
+                                type: ArgumentType.STRING,
+                                menu: "ledCh",
+                                defaultValue: "0",
+                            },
+
+                            COLOR: {
+                                type: ArgumentType.COLOR,
+                            },
+                        },
+                        programMode: [ProgramModeType.REALTIME],
+                    },
+                    {
+                        opcode: "playBuzzerTone",
+                        text: formatMessage({
+                            id: "arduinoUno.pins.playBuzzerTone",
+                            default:
+                                "play buzzer on pin [PIN] tone [TONE] for [BEAT] tempo [TEMPO]",
+                            description: "arduinoUno playBuzzerTone",
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            PIN: {
+                                type: ArgumentType.STRING,
+                                menu: "pins",
+                                defaultValue: Pins.D3,
+                            },
+                            TONE: {
+                                type: ArgumentType.STRING,
+                                menu: "tones",
+                            },
+                            BEAT: {
+                                type: ArgumentType.STRING,
+                                menu: "beats",
+                            },
+                            TEMPO: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 120,
+                            },
+                        },
+                        programMode: [ProgramModeType.REALTIME],
+                    },
+                    {
+                        opcode: "playBuzzerRingtone",
+                        text: formatMessage({
+                            id: "arduinoUno.pins.playBuzzerRingtone",
+                            default:
+                                "play buzzer on pin [PIN] ringtone [RINGTONE]",
+                            description: "arduinoUno playBuzzerRingtone",
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            PIN: {
+                                type: ArgumentType.STRING,
+                                menu: "pins",
+                                defaultValue: Pins.D3,
+                            },
+                            RINGTONE: {
+                                type: ArgumentType.STRING,
+                                menu: "ringtones",
                             },
                         },
                         programMode: [ProgramModeType.REALTIME],
@@ -1348,6 +1422,95 @@ class OpenBlockArduinoUnoDevice {
                                 text: "Generic",
                                 value: "generic",
                             },
+                        ],
+                    },
+                    ledCh: {
+                        items: [
+                            {
+                                text: "BOTH",
+                                value: "0",
+                            },
+                            {
+                                text: "1",
+                                value: "1",
+                            },
+                            {
+                                text: "2",
+                                value: "2",
+                            },
+                        ],
+                    },
+                    tones: {
+                        items: [
+                            { text: "C3", value: "C3" },
+                            { text: "C#3", value: "C#3" },
+                            { text: "D3", value: "D3" },
+                            { text: "D#3", value: "D#3" },
+                            { text: "E3", value: "E3" },
+                            { text: "F3", value: "F3" },
+                            { text: "F#3", value: "F#3" },
+                            { text: "G3", value: "G3" },
+                            { text: "G#3", value: "G#3" },
+                            { text: "A3", value: "A3" },
+                            { text: "A#3", value: "A#3" },
+                            { text: "B3", value: "B3" },
+                            { text: "C4", value: "C4" },
+                            { text: "C#4", value: "C#4" },
+                            { text: "D4", value: "D4" },
+                            { text: "D#4", value: "D#4" },
+                            { text: "E4", value: "E4" },
+                            { text: "F4", value: "F4" },
+                            { text: "F#4", value: "F#4" },
+                            { text: "G4", value: "G4" },
+                            { text: "G#4", value: "G#4" },
+                            { text: "A4", value: "A4" },
+                            { text: "A#4", value: "A#4" },
+                            { text: "B4", value: "B4" },
+                            { text: "C5", value: "C5" },
+                            { text: "C#5", value: "C#5" },
+                            { text: "D5", value: "D5" },
+                            { text: "D#5", value: "D#5" },
+                            { text: "E5", value: "E5" },
+                            { text: "F5", value: "F5" },
+                            { text: "F#5", value: "F#5" },
+                            { text: "G5", value: "G5" },
+                            { text: "G#5", value: "G#5" },
+                            { text: "A5", value: "A5" },
+                            { text: "A#5", value: "A#5" },
+                            { text: "B5", value: "B5" },
+                        ],
+                    },
+                    beats: {
+                        items: [
+                            { text: "1", value: "1" },
+                            { text: "1/2", value: "0.5" },
+                            { text: "1/4", value: "0.25" },
+                            { text: "1/8", value: "0.125" },
+                            { text: "1/16", value: "0.0625" },
+                            { text: "2", value: "2" },
+                            { text: "4", value: "4" },
+                        ],
+                    },
+                    ringtones: {
+                        items: [
+                            { text: "connection", value: "connection" },
+                            { text: "disconnection", value: "disconnection" },
+                            { text: "didi", value: "didi" },
+                            { text: "mode1", value: "mode1" },
+                            { text: "mode2", value: "mode2" },
+                            { text: "mode3", value: "mode3" },
+                            { text: "OhOoh", value: "OhOoh" },
+                            { text: "OhOoh2", value: "OhOoh2" },
+                            { text: "cuddly", value: "cuddly" },
+                            { text: "sleeping", value: "sleeping" },
+                            { text: "happy", value: "happy" },
+                            { text: "super happy", value: "superhappy" },
+                            { text: "happy short", value: "happyshort" },
+                            { text: "sad", value: "sad" },
+                            { text: "confused", value: "confused" },
+                            { text: "fart1", value: "fart1" },
+                            { text: "fart2", value: "fart2" },
+                            { text: "fart3", value: "fart3" },
                         ],
                     },
                 },
@@ -1733,7 +1896,19 @@ class OpenBlockArduinoUnoDevice {
     }
 
     getDhtValue(args) {
-        return this._peripheral.getDhtValue(args.TYPE, args.SENSOR, args.PIN);
+        if (args.TYPE != "DHT11") {
+            return this._peripheral.getDhtValue(
+                args.TYPE,
+                args.SENSOR,
+                args.PIN
+            );
+        } else {
+            return this._peripheral.getDhtValue(
+                args.TYPE,
+                args.SENSOR,
+                args.PIN
+            );
+        }
     }
     readAnalogSensor(args) {
         return this._peripheral.readAnalogSensor(args.PIN);
@@ -1766,6 +1941,21 @@ class OpenBlockArduinoUnoDevice {
     }
     setModeLcd(args) {
         this._peripheral.setModeLcd(args.MODE);
+        return Promise.resolve();
+    }
+
+    setLedOnBoard(args) {
+        const color = args.COLOR.replace("#", "0x").toLowerCase();
+        this._peripheral.setLedOnBoard(args.CH, color);
+        return Promise.resolve();
+    }
+
+    playBuzzerTone(args) {
+        this._peripheral.playBuzzer(args.PIN, args.TONE, args.BEAT, args.TEMPO);
+        return Promise.resolve();
+    }
+    playBuzzerRingtone(args) {
+        this._peripheral.playBuzzer(args.PIN, args.RINGTONE, 120, 1);
         return Promise.resolve();
     }
 }

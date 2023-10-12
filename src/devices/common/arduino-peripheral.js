@@ -730,6 +730,7 @@ class ArduinoPeripheral {
         }
     }
     getDhtValue(type, sensor, pin) {
+        console.log(this.isReady());
         if (this.isReady()) {
             pin = this.parsePin(pin);
             return new Promise((resolve) => {
@@ -914,6 +915,19 @@ class ArduinoPeripheral {
     setRelayEsp32(pin, value) {
         if (this.isReady()) {
             this._firmata.setRelayEsp32(pin, value);
+        }
+    }
+
+    setLedOnBoard(ch, color) {
+        if (this.isReady()) {
+            return this._firmata.setLedOnBoard(ch, color);
+        }
+    }
+
+    playBuzzer(pin, tone, beat, tempo) {
+        if (this.isReady()) {
+            pin = this.parsePin(pin);
+            return this._firmata.playBuzzer(pin, tone, beat, tempo);
         }
     }
 }
