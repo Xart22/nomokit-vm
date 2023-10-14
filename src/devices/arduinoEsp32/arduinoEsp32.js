@@ -162,8 +162,8 @@ const Motor = {
 };
 
 const MotorDirection = {
-    Forward: "FORWARD",
-    Backward: "BACKWARD",
+    Forward: "F",
+    Backward: "B",
 };
 const DigitalSensor = {
     IR: "IR (Proximity)",
@@ -2046,8 +2046,7 @@ class OpenBlockArduinoEsp32Device {
                         opcode: "playBuzzerTone",
                         text: formatMessage({
                             id: "arduinoUno.pins.playBuzzerTone",
-                            default:
-                                "play buzzer on pin [PIN] tone [TONE] for [BEAT] tempo [TEMPO]",
+                            default: "play buzzer on pin [PIN] tone [TONE] ",
                             description: "arduinoUno playBuzzerTone",
                         }),
                         blockType: BlockType.COMMAND,
@@ -2060,36 +2059,6 @@ class OpenBlockArduinoEsp32Device {
                             TONE: {
                                 type: ArgumentType.STRING,
                                 menu: "tones",
-                            },
-                            BEAT: {
-                                type: ArgumentType.STRING,
-                                menu: "beats",
-                            },
-                            TEMPO: {
-                                type: ArgumentType.NUMBER,
-                                defaultValue: 120,
-                            },
-                        },
-                        programMode: [ProgramModeType.REALTIME],
-                    },
-                    {
-                        opcode: "playBuzzerRingtone",
-                        text: formatMessage({
-                            id: "arduinoUno.pins.playBuzzerRingtone",
-                            default:
-                                "play buzzer on pin [PIN] ringtone [RINGTONE]",
-                            description: "arduinoUno playBuzzerRingtone",
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: "pins",
-                                defaultValue: Pins.IO3,
-                            },
-                            RINGTONE: {
-                                type: ArgumentType.STRING,
-                                menu: "ringtones",
                             },
                         },
                         programMode: [ProgramModeType.REALTIME],
@@ -2278,16 +2247,11 @@ class OpenBlockArduinoEsp32Device {
                         text: formatMessage({
                             id: "arduinoUno.lcd.setLed",
                             default:
-                                "Set LED type[TYPE] R pin[R] G pin[G] B pin[B] color [COLOR]",
+                                "Set LED R pin[R] G pin[G] B pin[B] color [COLOR]",
                             description: "arduinoUno set led",
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            TYPE: {
-                                type: ArgumentType.STRING,
-                                menu: "type",
-                                defaultValue: "A",
-                            },
                             R: {
                                 type: ArgumentType.STRING,
                                 menu: "pins",
@@ -2479,7 +2443,7 @@ class OpenBlockArduinoEsp32Device {
 
     setLed(args) {
         const color = this.hex2rgb(args.COLOR);
-        this._peripheral.setLed(args.R, args.G, args.B, args.TYPE, color);
+        this._peripheral.setLed(args.R, args.G, args.B, 0, color);
         return Promise.resolve();
     }
 
@@ -2495,7 +2459,7 @@ class OpenBlockArduinoEsp32Device {
     }
 
     playBuzzerTone(args) {
-        this._peripheral.playBuzzer(args.PIN, args.TONE, args.BEAT, args.TEMPO);
+        this._peripheral.playBuzzer(args.PIN, args.TONE, 1, 1);
         return Promise.resolve();
     }
     playBuzzerRingtone(args) {

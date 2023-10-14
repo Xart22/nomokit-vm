@@ -818,7 +818,7 @@ class Firmata extends Emitter {
     }
 
     servoEsp32(pin, value) {
-        this.sendString(`SERVO,${pin},${value}`);
+        this.sendString(`S,${pin},${value}`);
     }
     readAnalogPinEsp32(pin, callback) {
         this.once("string", (message) => {
@@ -827,7 +827,7 @@ class Firmata extends Emitter {
                 callback(data[1]);
             }
         });
-        this.sendString(`ANALOG,${pin}`);
+        this.sendString(`A,${pin}`);
     }
 
     readDigitalPinEsp32(pin, callback) {
@@ -837,11 +837,11 @@ class Firmata extends Emitter {
                 callback(data[1]);
             }
         });
-        this.sendString(`DIGITAL,${pin}`);
+        this.sendString(`D,${pin}`);
     }
 
     setDigitalOutputEsp32(pin, value) {
-        this.sendString(`DIGITALOUT,${pin},${value}`);
+        this.sendString(`DO,${pin},${value}`);
     }
 
     readTouchPinEsp32(pin, callback) {
@@ -851,15 +851,15 @@ class Firmata extends Emitter {
                 callback(data[1]);
             }
         });
-        this.sendString(`TOUCH,${pin}`);
+        this.sendString(`T,${pin}`);
     }
 
     setServoOutputEsp32(pin, value) {
-        this.sendString(`SERVO,${pin},${value}`);
+        this.sendString(`S,${pin},${value}`);
     }
 
     setMotorEsp32(motor, pin1, pin2, pwmPin) {
-        this.sendString(`SETMOTOR,${pin1},${pin2},${pwmPin},${motor}`);
+        this.sendString(`SM,${pin1},${pin2},${pwmPin},${motor}`);
     }
 
     setMotorDirectionEsp32(direction, motor, speed) {
@@ -875,7 +875,7 @@ class Firmata extends Emitter {
         if (motor == null) {
             return;
         }
-        this.sendString(`STOP,${motor.pin1},${motor.pin2},${motor.motor}`);
+        this.sendString(`SP,${motor.pin1},${motor.pin2},${motor.motor}`);
     }
 
     setRelayEsp32(pin, value) {
@@ -887,7 +887,6 @@ class Firmata extends Emitter {
     }
 
     setLed(r, g, b, mode, color) {
-        console.log(r, g, b, mode, color);
         this.sendString(
             `RGB,${r},${g},${b},${mode},${color.r},${color.g},${color.b}`
         );
