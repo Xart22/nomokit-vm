@@ -2379,7 +2379,7 @@ class OpenBlockArduinoEsp32Device {
     }
 
     readDigitalSensorEsp32(args) {
-        return this._peripheral.readDigitalSensorEsp32(args.SENSOR, args.PIN);
+        return this._peripheral.readDigitalPinEsp32(args.PIN);
     }
 
     setDigitalOutputRealtime(args) {

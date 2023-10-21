@@ -38,7 +38,7 @@ const FirmataReadyTimeout = 6500;
 /**
  * A time interval to wait deivce report data.
  */
-const FrimataReadTimeout = 2000;
+const FrimataReadTimeout = 3000;
 
 /**
  * Manage communication with a common peripheral over a OpenBlock Link client socket.

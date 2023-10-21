@@ -832,6 +832,7 @@ class Firmata extends Emitter {
 
     readDigitalPinEsp32(pin, callback) {
         this.once("string", (message) => {
+            console.log(message);
             if (message.includes("DIGITAL")) {
                 const data = message.split("-");
                 callback(data[1]);
