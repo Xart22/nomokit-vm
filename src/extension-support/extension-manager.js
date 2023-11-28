@@ -74,6 +74,9 @@ const builtinDevices = {
     microbit: () => require("../devices/microbit/microbit"),
     microbitV2: () => require("../devices/microbit/microbitV2"),
 
+    nomoBotStarterKit: () =>
+        require("../devices/arduinoEsp8266/nomoBotStarterKit"),
+
     // TODO: transform these to device extension.
     // wedo2: () => require('../extensions/scratch3_wedo2'),
     // ev3: () => require('../extensions/scratch3_ev3'),
