@@ -83,7 +83,7 @@ class OpenBlockArduinoEsp8266NodeMCUDevice extends OpenBlockArduinoEsp8266Device
      * @return {string} - the ID of this extension.
      */
     get DEVICE_ID() {
-        return "arduinoEsp8266NodeMCU";
+        return "nomoBotStarterKit";
     }
 
     get PINS_MENU() {
