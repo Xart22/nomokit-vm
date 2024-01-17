@@ -134,26 +134,27 @@ const Beats = {
 };
 
 const Melody = {
-    dadadum: "dadadum",
-    entertainer: "entertainer",
-    prelude: "prelude",
-    ode: "ode",
-    nyan: "nyan",
-    ringtone: "ringtone",
-    funk: "funk",
-    blues: "blues",
-    birthday: "birthday",
-    wedding: "wedding",
-    funereal: "funereal",
-    punchline: "punchline",
-    baddy: "baddy",
-    chase: "chase",
-    ba_ding: "ba_ding",
-    wawawawaa: "wawawawaa",
-    jump_up: "jump_up",
-    jump_down: "jump_down",
-    power_up: "power_up",
-    power_down: "power_down",
+    dadadum: "DADADADUM",
+    entertainer: "ENTERTAINER",
+    prelude: "PRELUDE",
+    ode: "ODE",
+    nyan: "NYAN",
+    ringtone: "RINGTONE",
+    funk: "FUNK",
+    blues: "BLUES",
+    birthday: "BIRTHDAY",
+    wedding: "WEDDING",
+    funereal: "FUNERAL",
+    punchline: "PUNCHLINE",
+    python: "PYTHON",
+    baddy: "BADDY",
+    chase: "CHASE",
+    ba_ding: "BA_DING",
+    wawawawaa: "WAWAWAWAA",
+    jump_up: "JUMP_UP",
+    jump_down: "JUMP_DOWN",
+    power_up: "POWER_UP",
+    power_down: "POWER_DOWN",
 };
 
 /**
@@ -1252,38 +1253,38 @@ class NomokitMicrobitDevice {
                         },
                     },
                     "---",
-                    {
-                        opcode: "compassAngle",
-                        text: formatMessage({
-                            id: "microbit.sensor.compassAngle",
-                            default: "compass angle",
-                            description: "microbit compass angle",
-                        }),
-                        blockType: BlockType.REPORTER,
-                        programMode: [ProgramModeType.UPLOAD],
-                        disableMonitor: true,
-                    },
-                    {
-                        opcode: "compassMagneticDensity",
-                        text: formatMessage({
-                            id: "microbit.sensor.compassMagneticDensity",
-                            default: "compass magnetic density",
-                            description: "microbit compass magnetic density",
-                        }),
-                        blockType: BlockType.REPORTER,
-                        programMode: [ProgramModeType.UPLOAD],
-                        disableMonitor: true,
-                    },
-                    {
-                        opcode: "calibrateCompass",
-                        text: formatMessage({
-                            id: "microbit.sensor.calibrateCompass",
-                            default: "calibrate compass",
-                            description: "microbit calibrate compass",
-                        }),
-                        blockType: BlockType.COMMAND,
-                        programMode: [ProgramModeType.UPLOAD],
-                    },
+                    // {
+                    //     opcode: "compassAngle",
+                    //     text: formatMessage({
+                    //         id: "microbit.sensor.compassAngle",
+                    //         default: "compass angle",
+                    //         description: "microbit compass angle",
+                    //     }),
+                    //     blockType: BlockType.REPORTER,
+                    //     programMode: [ProgramModeType.UPLOAD],
+                    //     disableMonitor: true,
+                    // },
+                    // {
+                    //     opcode: "compassMagneticDensity",
+                    //     text: formatMessage({
+                    //         id: "microbit.sensor.compassMagneticDensity",
+                    //         default: "compass magnetic density",
+                    //         description: "microbit compass magnetic density",
+                    //     }),
+                    //     blockType: BlockType.REPORTER,
+                    //     programMode: [ProgramModeType.UPLOAD],
+                    //     disableMonitor: true,
+                    // },
+                    // {
+                    //     opcode: "calibrateCompass",
+                    //     text: formatMessage({
+                    //         id: "microbit.sensor.calibrateCompass",
+                    //         default: "calibrate compass",
+                    //         description: "microbit calibrate compass",
+                    //     }),
+                    //     blockType: BlockType.COMMAND,
+                    //     programMode: [ProgramModeType.UPLOAD],
+                    // },
                     "---",
                     {
                         opcode: "lightLevel",
@@ -1541,23 +1542,6 @@ class NomokitMicrobitDevice {
                         arguments: {
                             TEMPO: {
                                 type: ArgumentType.NUMBER,
-                                defaultValue: "255",
-                            },
-                        },
-                    },
-
-                    {
-                        opcode: "setVolume",
-                        text: formatMessage({
-                            id: "microbit.music.setVolume",
-                            default: "set volume [VOL]",
-                            description: "microbit set volume",
-                        }),
-                        blockType: BlockType.COMMAND,
-                        programMode: [ProgramModeType.UPLOAD],
-                        arguments: {
-                            VOL: {
-                                type: ArgumentType.UINT8_NUMBER,
                                 defaultValue: "255",
                             },
                         },
