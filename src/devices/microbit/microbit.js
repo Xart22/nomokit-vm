@@ -1546,6 +1546,22 @@ class NomokitMicrobitDevice {
                             },
                         },
                     },
+                    {
+                        opcode: "setVolume",
+                        text: formatMessage({
+                            id: "microbit.music.setVolume",
+                            default: "set Volume [VOL]",
+                            description: "microbit set volume",
+                        }),
+                        blockType: BlockType.COMMAND,
+                        programMode: [ProgramModeType.UPLOAD],
+                        arguments: {
+                            VOL: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: "255",
+                            },
+                        },
+                    },
                 ],
                 menus: {
                     chords: {
