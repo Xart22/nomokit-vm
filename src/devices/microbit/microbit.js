@@ -1188,6 +1188,125 @@ class NomokitMicrobitDevice {
                 },
             },
             {
+                id: "led",
+                name: formatMessage({
+                    id: "microbit.category.led",
+                    default: "Led",
+                    description: "The name of the microbit device led category",
+                }),
+                color1: "#4C97FF",
+                blocks: [
+                    {
+                        opcode: "plot",
+                        text: formatMessage({
+                            id: "microbit.led.plot",
+                            default: "plot x [X] y [Y]",
+                            description: "microbit plot",
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            X: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Y: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: "1",
+                            },
+                        },
+                        programMode: [ProgramModeType.UPLOAD],
+                    },
+                    {
+                        opcode: "unplot",
+                        text: formatMessage({
+                            id: "microbit.led.unplot",
+                            default: "unplot x [X] y [Y]",
+                            description: "microbit unplot",
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            X: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Y: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: "1",
+                            },
+                        },
+                        programMode: [ProgramModeType.UPLOAD],
+                    },
+                    {
+                        opcode: "getPixel",
+                        text: formatMessage({
+                            id: "microbit.led.getPixel",
+                            default: "pixel x [X] y [Y]",
+                            description: "microbit get pixel",
+                        }),
+                        blockType: BlockType.BOOLEAN,
+                        arguments: {
+                            X: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Y: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: "1",
+                            },
+                        },
+                        programMode: [ProgramModeType.UPLOAD],
+                    },
+                    {
+                        opcode: "plotBarGraph",
+                        text: formatMessage({
+                            id: "microbit.led.plotBarGraph",
+                            default:
+                                "plot bar graph of  [X] to [Y] serial write [SERIAL]",
+                            description: "microbit plot bar graph",
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            X: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Y: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: "1",
+                            },
+                            SERIAL: {
+                                type: ArgumentType.STRING,
+                                defaultValue: "True",
+                                menu: "serial",
+                            },
+                        },
+                        programMode: [ProgramModeType.UPLOAD],
+                    },
+                ],
+                menus: {
+                    serial: {
+                        items: [
+                            {
+                                text: formatMessage({
+                                    id: "microbit.serial.serial",
+                                    default: "serial",
+                                    description: "label for serial",
+                                }),
+                                value: "True",
+                            },
+                            {
+                                text: formatMessage({
+                                    id: "microbit.serial.noSerial",
+                                    default: "no serial",
+                                    description: "label for no serial",
+                                }),
+                                value: "False",
+                            },
+                        ],
+                    },
+                },
+            },
+            {
                 id: "sensor",
                 name: formatMessage({
                     id: "microbit.category.sensor",
