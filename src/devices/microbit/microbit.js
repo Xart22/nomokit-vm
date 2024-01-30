@@ -130,7 +130,7 @@ const Beats = {
     Eighth: 125,
     Sixteenth: 62.5,
     Double: 2000,
-    Breve: 2000,
+    Breve: 4000,
 };
 
 const Melody = {
