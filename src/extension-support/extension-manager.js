@@ -39,6 +39,7 @@ const builtinExtensions = {
 const builtinDevices = {
     // Arduino Uno
     arduinoUno: () => require("../devices/arduinoUno/arduinoUno"),
+    arduinoUnoR4Wifi: () => require("../devices/arduinoUno/arduinoUnoR4Wifi"),
     arduinoNano: () => require("../devices/arduinoUno/arduinoNano"),
     arduinoNano2: () => require("../devices/arduinoUno/arduinoNanoClone"),
     arduinoNanoNobot: () => require("../devices/arduinoUno/arduinoNanoNobot"),
