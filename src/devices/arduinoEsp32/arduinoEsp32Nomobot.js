@@ -259,7 +259,7 @@ class OpenBlockArduinoEsp32Device {
      * @return {string} - the ID of this extension.
      */
     get DEVICE_ID() {
-        return "arduinoEsp32";
+        return "arduinoEsp32Nomobot";
     }
 
     get PWM_PINS_MENU() {
