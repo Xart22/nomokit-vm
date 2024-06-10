@@ -10,7 +10,7 @@ const BlockType = require("./block-type");
 
 // Local resources server address
 const localResourcesServerUrl = "https://nomopro.nomo-kit.com/";
-//const localResourcesServerUrl = "http://127.0.0.1:20113/";
+// const localResourcesServerUrl = "http://127.0.0.1:20113/";
 //const localResourcesServerUrl = "https://nomobase.nomo-kit.com/";
 
 // These extensions are currently built into the VM repository but should not be loaded at startup.
@@ -56,6 +56,7 @@ const builtinDevices = {
     // Esp32
     arduinoEsp32: () => require("../devices/arduinoEsp32/arduinoEsp32"),
     arduinoEsp32Cam: () => require("../devices/arduinoEsp32/arduinoEsp32Cam"),
+    arduinoEsp32Nomobot: () => require("../devices/arduinoEsp32/arduinoEsp32Nomobot"),
     arduinoNano33BleSense: () =>
         require("../devices/arduinoNano33Ble/arduinoNano33Ble"),
     // Esp8266
@@ -251,7 +252,11 @@ class ExtensionManager {
             // If we `require` this at the global level it breaks non-webpack targets, including tests
             const ExtensionWorker = require("worker-loader?name=extension-worker.js!./extension-worker");
 
-            this.pendingExtensions.push({ extensionURL, resolve, reject });
+            this.pendingExtensions.push({
+                extensionURL,
+                resolve,
+                reject
+            });
             dispatch.addWorker(new ExtensionWorker());
         });
     }
@@ -263,10 +268,10 @@ class ExtensionManager {
     getDeviceList() {
         return new Promise((resolve) => {
             fetch(
-                `${localResourcesServerUrl}devices/${
+                    `${localResourcesServerUrl}devices/${
                     formatMessage.setup().locale
                 }.json`
-            )
+                )
                 .then((response) => response.json())
                 .then(
                     (devices) => {
@@ -372,10 +377,10 @@ class ExtensionManager {
     getDeviceExtensionsList() {
         return new Promise((resolve) => {
             fetch(
-                `${localResourcesServerUrl}extensions/${
+                    `${localResourcesServerUrl}extensions/${
                     formatMessage.setup().locale
                 }.json`
-            )
+                )
                 .then((response) => response.json())
                 .then(
                     (extensions) => {
@@ -426,7 +431,7 @@ class ExtensionManager {
             if (typeof deviceExtension === "undefined") {
                 return reject(
                     `Error while loadDeviceExtension device extension ` +
-                        `can not find device extension: ${deviceExtensionId}`
+                    `can not find device extension: ${deviceExtensionId}`
                 );
             }
             console.log("loadDeviceExtension", deviceExtension);
@@ -447,8 +452,8 @@ class ExtensionManager {
             global.registerMessages = null;
 
             loadjs([toolboxUrl, blockUrl, generatorUrl, msgUrl], {
-                returnPromise: true,
-            })
+                    returnPromise: true,
+                })
                 .then(() => {
                     const getToolboxXML =
                         global.registerToolboxs || global.addToolbox;
@@ -460,10 +465,8 @@ class ExtensionManager {
 
                     const deviceExtensionsRegister = {
                         defineBlocks: global.registerBlocks || global.addBlocks,
-                        defineGenerators:
-                            global.registerGenerators || global.addGenerator,
-                        defineMessages:
-                            global.registerMessages || global.addMsg,
+                        defineGenerators: global.registerGenerators || global.addGenerator,
+                        defineMessages: global.registerMessages || global.addMsg,
                     };
 
                     this.runtime.emit(
@@ -476,7 +479,7 @@ class ExtensionManager {
                     console.log(err);
                     reject(
                         `Error while load device extension ` +
-                            `${deviceExtension.extensionId}'s js file: ${err}`
+                        `${deviceExtension.extensionId}'s js file: ${err}`
                     );
                 });
         });
@@ -527,7 +530,10 @@ class ExtensionManager {
             } else {
                 extensionId = serviceName.split("_")[2];
             }
-            return { extensionId, deviceId };
+            return {
+                extensionId,
+                deviceId
+            };
         }
         return null;
     }
@@ -542,26 +548,26 @@ class ExtensionManager {
         ).concat(Array.from(this._loadedDevice.values()));
         const allPromises = loadedExtensionsAndDevice.map((serviceName) =>
             dispatch
-                .call(serviceName, "getInfo")
-                .then((info) => {
-                    info = this._prepareExtensionInfo(
-                        serviceName,
-                        info,
-                        this.getIdFromServiceName(serviceName)
-                    );
-                    dispatch.call(
-                        "runtime",
-                        "_refreshExtensionPrimitives",
-                        info
-                    );
-                })
-                .catch((e) => {
-                    log.error(
-                        `Failed to refresh built-in extension primitives: ${JSON.stringify(
+            .call(serviceName, "getInfo")
+            .then((info) => {
+                info = this._prepareExtensionInfo(
+                    serviceName,
+                    info,
+                    this.getIdFromServiceName(serviceName)
+                );
+                dispatch.call(
+                    "runtime",
+                    "_refreshExtensionPrimitives",
+                    info
+                );
+            })
+            .catch((e) => {
+                log.error(
+                    `Failed to refresh built-in extension primitives: ${JSON.stringify(
                             e
                         )}`
-                    );
-                })
+                );
+            })
         );
         return Promise.all(allPromises);
     }
@@ -811,9 +817,7 @@ class ExtensionManager {
      * @private
      */
     _prepareBlockInfo(serviceName, blockInfo) {
-        blockInfo = Object.assign(
-            {},
-            {
+        blockInfo = Object.assign({}, {
                 blockType: BlockType.COMMAND,
                 terminal: false,
                 blockAllThreads: false,
@@ -845,13 +849,13 @@ class ExtensionManager {
                     throw new Error("Missing opcode for block");
                 }
 
-                const funcName = blockInfo.func
-                    ? this._sanitizeID(blockInfo.func)
-                    : blockInfo.opcode;
+                const funcName = blockInfo.func ?
+                    this._sanitizeID(blockInfo.func) :
+                    blockInfo.opcode;
 
-                const getBlockInfo = blockInfo.isDynamic
-                    ? (args) => args && args.mutation && args.mutation.blockInfo
-                    : () => blockInfo;
+                const getBlockInfo = blockInfo.isDynamic ?
+                    (args) => args && args.mutation && args.mutation.blockInfo :
+                    () => blockInfo;
                 const callBlockFunc = (() => {
                     if (dispatch._isRemoteService(serviceName)) {
                         return (args, util, realBlockInfo) =>
