@@ -9,7 +9,8 @@ const maybeFormatMessage = require("../util/maybe-format-message");
 const BlockType = require("./block-type");
 
 // Local resources server address
-const localResourcesServerUrl = "https://nomopro.nomo-kit.com/";
+// const localResourcesServerUrl = "https://nomopro.nomo-kit.com/";
+const localResourcesServerUrl = "https://stg-nomopro-resource.sonajaya.com"
 // const localResourcesServerUrl = "http://127.0.0.1:20113/";
 //const localResourcesServerUrl = "https://nomobase.nomo-kit.com/";
 
