@@ -149,7 +149,7 @@ class OpenBlockArduinoEsp32CamDevice {
      * @return {string} - the ID of this extension.
      */
     get DEVICE_ID() {
-        return "arduinoEsp32Cam";
+        return "arduinoEsp32CamAddOn";
     }
 
     get PINS_MENU() {

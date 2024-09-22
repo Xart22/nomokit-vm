@@ -57,6 +57,7 @@ const builtinDevices = {
     // Esp32
     arduinoEsp32: () => require("../devices/arduinoEsp32/arduinoEsp32"),
     arduinoEsp32Cam: () => require("../devices/arduinoEsp32/arduinoEsp32Cam"),
+    arduinoEsp32CamAddOn: () => require("../devices/arduinoEsp32/arduinoEsp32CamAddOn"),
     arduinoEsp32Nomobot: () => require("../devices/arduinoEsp32/arduinoEsp32Nomobot"),
     arduinoNano33BleSense: () =>
         require("../devices/arduinoNano33Ble/arduinoNano33Ble"),
@@ -79,6 +80,7 @@ const builtinDevices = {
 
     nomoBotStarterKit: () =>
         require("../devices/arduinoEsp8266/nomoBotStarterKit"),
+    nobotAi: () => require("../devices/arduinoEsp32/arduinoEsp32NobotAI")
 
     // TODO: transform these to device extension.
     // wedo2: () => require('../extensions/scratch3_wedo2'),
