@@ -34,8 +34,8 @@ const SERIAL_CONFIG = {
 const DIVECE_OPT = {
     type: "arduino",
     fqbn: {
-        darwin: "esp32:esp32:esp32:UploadSpeed=460800,PSRAM=enable",
-        linux: "esp32:esp32:esp32:UploadSpeed=460800,PSRAM=enable",
+        darwin: "esp32:esp32:esp32:UploadSpeed=460800,PSRAM=enabled",
+        linux: "esp32:esp32:esp32:UploadSpeed=460800,PSRAM=enabled",
         win32: "esp32:esp32:esp32:JTAGAdapter=default,PSRAM=enabled,PartitionScheme=default,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=921600,LoopCore=1,EventsCore=1,DebugLevel=none,EraseFlash=none",
     },
 };
