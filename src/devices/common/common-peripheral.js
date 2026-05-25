@@ -427,11 +427,15 @@ class CommonPeripheral {
      * Send a message to the peripheral Serialport socket.
      * @param {Uint8Array} message - the message to write
      */
-    send(message) {
+    async send(message) {
         if (!this.isConnected()) return;
 
         const data = Base64Util.uint8ArrayToBase64(message);
-        this._serialport.write(data, "base64");
+        try {
+            await this._serialport.write(data, "base64");
+        } catch (e) {
+            // Ignore write errors - Firmata doesn't expect async
+        }
     }
 
     /**
@@ -458,15 +462,17 @@ class CommonPeripheral {
      * @private
      */
     _onMessage(base64) {
+        // Always emit raw serial data so consumers (e.g. Python IDE serial terminal)
+        // can receive it regardless of program mode.
+        const consoleData = Buffer.from(base64, "base64");
+        this._runtime.emit(
+            this._runtime.constructor.PERIPHERAL_RECIVE_DATA,
+            consoleData
+        );
+
         if (this._runtime.isRealtimeMode()) {
             const data = Base64Util.base64ToUint8Array(base64);
             this._firmata.onReciveData(data);
-        } else {
-            const consoleData = Buffer.from(base64, "base64");
-            this._runtime.emit(
-                this._runtime.constructor.PERIPHERAL_RECIVE_DATA,
-                consoleData
-            );
         }
     }
     /**

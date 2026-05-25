@@ -15,7 +15,7 @@ class Serialport extends JSONRPC {
         deviceId,
         peripheralOptions,
         connectCallback = null,
-        resetCallback = null
+        resetCallback = null,
     ) {
         super();
 
@@ -51,12 +51,12 @@ class Serialport extends JSONRPC {
         }
         this._discoverTimeoutID = window.setTimeout(
             this._handleDiscoverTimeout.bind(this),
-            15000
+            15000,
         );
         this.sendRemoteRequest("discover", this._peripheralOptions).catch(
             (e) => {
                 this._handleRequestError(e);
-            }
+            },
         );
     }
 
@@ -74,7 +74,7 @@ class Serialport extends JSONRPC {
             .then(() => {
                 this._connected = true;
                 this._runtime.emit(
-                    this._runtime.constructor.PERIPHERAL_CONNECTED
+                    this._runtime.constructor.PERIPHERAL_CONNECTED,
                 );
                 if (this._connectCallback) {
                     this._connectCallback();
@@ -118,7 +118,7 @@ class Serialport extends JSONRPC {
             return this.sendRemoteRequest("updateBaudrate", params).catch(
                 (e) => {
                     this.handleDisconnectError(e);
-                }
+                },
             );
         }
     }
@@ -204,7 +204,7 @@ class Serialport extends JSONRPC {
                 this._availablePeripherals[params.peripheralId] = params;
                 this._runtime.emit(
                     this._runtime.constructor.PERIPHERAL_LIST_UPDATE,
-                    this._availablePeripherals
+                    this._availablePeripherals,
                 );
                 if (this._discoverTimeoutID) {
                     window.clearTimeout(this._discoverTimeoutID);
@@ -215,7 +215,7 @@ class Serialport extends JSONRPC {
                     this._runtime.constructor.PERIPHERAL_REQUEST_ERROR,
                     {
                         message: params.message,
-                    }
+                    },
                 );
                 break;
             case "peripheralUnplug":
@@ -231,14 +231,14 @@ class Serialport extends JSONRPC {
                     this._runtime.constructor.PERIPHERAL_UPLOAD_STDOUT,
                     {
                         message: params.message,
-                    }
+                    },
                 );
                 break;
             case "setUploadAbortEnabled":
                 this._runtime.emit(
                     this._runtime.constructor
                         .PERIPHERAL_SET_UPLOAD_ABORT_ENABLED,
-                    params
+                    params,
                 );
                 break;
             case "uploadError":
@@ -246,13 +246,13 @@ class Serialport extends JSONRPC {
                     this._runtime.constructor.PERIPHERAL_UPLOAD_ERROR,
                     {
                         message: params.message,
-                    }
+                    },
                 );
                 break;
             case "uploadSuccess":
                 this._runtime.emit(
                     this._runtime.constructor.PERIPHERAL_UPLOAD_SUCCESS,
-                    params ? params.aborted : false
+                    params ? params.aborted : false,
                 );
                 break;
             case "ping":
@@ -285,7 +285,7 @@ class Serialport extends JSONRPC {
             {
                 message: `Scratch lost connection to`,
                 deviceId: this._deviceId,
-            }
+            },
         );
     }
 
@@ -310,7 +310,7 @@ class Serialport extends JSONRPC {
     handleRealtimeConnectSucess() {
         this._runtime.emit(
             this._runtime.constructor.PERIPHERAL_REALTIME_CONNECT_SUCCESS,
-            { deviceId: this._deviceId }
+            { deviceId: this._deviceId },
         );
     }
 
