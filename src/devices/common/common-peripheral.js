@@ -156,6 +156,19 @@ class CommonPeripheral {
      * @param {string} code - the code want to upload.
      */
     upload(code) {
+        // MicroPython flash/detect mode — uses runtime state flag
+        if (this._runtime._micropythonMode) {
+            const mode = this._runtime._micropythonMode;
+            delete this._runtime._micropythonMode;
+            const base64Str = Buffer.from(code).toString("base64");
+            if (mode === 'flash') {
+                this._serialport.upload(base64Str, { type: "micropython", flashOnly: true, board: "esp32" }, "base64");
+            } else if (mode === 'detect') {
+                this._serialport.upload(base64Str, { type: "micropython", detectOnly: true }, "base64");
+            }
+            return;
+        }
+
         // Delete curent firmata. Otherwise, after uploading a new program in upload mode,
         // when returning to real time mode, since the old fimata service still exists,
         // an RealtimeDisconnectErrorerror will be reported quickly.
@@ -167,6 +180,32 @@ class CommonPeripheral {
 
         const base64Str = Buffer.from(code).toString("base64");
         this._serialport.upload(base64Str, this.diveceOpt, "base64");
+    }
+
+    /**
+     * Upload MicroPython code to a peripheral using raw REPL.
+     * Uses type "micropython" so the Link server routes to the MicroPython uploader.
+     * @param {string} code - the Python code to upload.
+     * @param {object} [opts] - optional: fileName, board, baudRate
+     */
+    micropythonUpload(code, opts = {}) {
+        const base64Str = Buffer.from(code).toString("base64");
+        const config = {
+            type: "micropython",
+            fileName: opts.fileName || "main.py",
+            board: opts.board || "esp32",
+            baudRate: opts.baudRate || 115200
+        };
+        if (opts.flashOnly) {
+            config.flashOnly = true;
+            config.firmwareInfo = opts.firmwareInfo;
+            config.flashOffset = opts.flashOffset;
+            config.flashBaud = opts.flashBaud;
+        }
+        if (opts.detectOnly) {
+            config.detectOnly = true;
+        }
+        this._serialport.upload(base64Str, config, "base64");
     }
 
     /**
