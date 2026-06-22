@@ -60,22 +60,27 @@ class OB2ScratchBlocks {
         });
 
         this.objects = [];
-        this.objectDetector = ml5.objectDetector("cocossd", {}, () => {});
+        this.modelReady = false;
+        this.objectDetector = ml5.objectDetector("cocossd", {}, () => {
+            this.modelReady = true;
+        });
         this.firstLayer = document.querySelector("canvas");
-        this.canvas = document.createElement("canvas");
-        this.canvas.style.position = "absolute";
-        this.canvas.style.top = "0px";
-        this.canvas.style.left = "0px";
-        this.canvas.style.zIndex = "1";
-        this.canvas.style.pointerEvents = "none";
-        this.canvas.width = this.firstLayer.width;
-        this.canvas.height = this.firstLayer.height;
+        if (this.firstLayer) {
+            this.canvas = document.createElement("canvas");
+            this.canvas.style.position = "absolute";
+            this.canvas.style.top = "0px";
+            this.canvas.style.left = "0px";
+            this.canvas.style.zIndex = "1";
+            this.canvas.style.pointerEvents = "none";
+            this.canvas.width = this.firstLayer.width;
+            this.canvas.height = this.firstLayer.height;
 
-        this.firstLayer.parentNode.insertBefore(
-            this.canvas,
-            this.firstLayer.nextSibling
-        );
-        this.ctx = this.canvas.getContext("2d");
+            this.firstLayer.parentNode.insertBefore(
+                this.canvas,
+                this.firstLayer.nextSibling
+            );
+            this.ctx = this.canvas.getContext("2d");
+        }
         this.runtime.ioDevices.video.enableVideo();
 
         this.confidenceThreshold = 0.5;
@@ -318,7 +323,7 @@ class OB2ScratchBlocks {
 
     showBoundingBoxes(args) {
         const state = args.SHOW_BOUNDING_BOXES;
-        if (state === "on") {
+        if (state === "show") {
             this.showBounding = true;
         } else {
             this.showBounding = false;
@@ -340,23 +345,30 @@ class OB2ScratchBlocks {
     }
 
     analyseImageFrom() {
-        if (!this.objectDetector) {
+        if (!this.objectDetector || !this.modelReady) {
+            return Promise.resolve([]);
+        }
+        if (!this.firstLayer || !this.canvas) {
             return Promise.resolve([]);
         }
         this.canvas.width = this.firstLayer.width;
         this.canvas.height = this.firstLayer.height;
-        this.objectDetector.detect(this.firstLayer, (error, results) => {
-            if (error) {
-                console.error(error);
-                return;
-            }
-            this.objects = results;
+        return new Promise((resolve) => {
+            this.objectDetector.detect(this.firstLayer, (error, results) => {
+                if (error) {
+                    console.error(error);
+                    resolve([]);
+                    return;
+                }
+                this.objects = results;
+                this.draw();
+                resolve(["Done"]);
+            });
         });
-        this.draw();
-        return Promise.resolve(["Done"]);
     }
 
     draw() {
+        if (!this.ctx) return;
         if (this.showBounding) {
             this.ctx.fillStyle = "rgba(0, 0, 0, 0)";
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

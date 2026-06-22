@@ -35,6 +35,7 @@ const builtinExtensions = {
     tmpose2scratch: () => require("../extensions/tmpose2crath"),
     handpose2scratch: () => require("../extensions/handpose2scratch"),
     speech: () => require("../extensions/scratch3_speech2"),
+    speech2text: () => require("../extensions/scratch3_speech2text"),
 };
 
 const builtinDevices = {
