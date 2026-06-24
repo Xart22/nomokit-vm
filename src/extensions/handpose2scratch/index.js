@@ -110,22 +110,8 @@ class Scratch3Handpose2ScratchBlocks {
         this.landmarks = [];
         this.ratio = 0.75;
         this._locale = "en";
-
-        this.detectHand = () => {
-            this.video = this.runtime.ioDevices.video.provider.video;
-
-            alert(Message.please_wait[this._locale]);
-
-            const handpose = ml5.handpose(this.video, function () {
-                console.log("Model loaded!");
-            });
-
-            handpose.on("predict", (hands) => {
-                hands.forEach((hand) => {
-                    this.landmarks = hand.landmarks;
-                });
-            });
-        };
+        this._handposeWanted = false;
+        this._handpose = null;
     }
 
     get EXTENSION_ID() {
@@ -350,14 +336,51 @@ class Scratch3Handpose2ScratchBlocks {
         }
     }
 
-    videoToggle(args) {
-        let state = args.VIDEO_STATE;
+    async videoToggle(args) {
+        const state = args.VIDEO_STATE;
         if (state === "off") {
+            this._handposeWanted = false;
+            this._handpose = null;
             this.runtime.ioDevices.video.disableVideo();
         } else {
-            this.runtime.ioDevices.video.enableVideo().then(this.detectHand);
+            this._handposeWanted = true;
             this.runtime.ioDevices.video.mirror = state === "on";
+            try {
+                await this.runtime.ioDevices.video.enableVideo();
+            } catch (e) {
+                if (this._handposeWanted) {
+                    console.warn("Handpose: enableVideo failed", e);
+                }
+                return;
+            }
+            if (!this._handposeWanted) return;
+            this._startHandpose();
         }
+    }
+
+    _startHandpose() {
+        const videoDev = this.runtime.ioDevices.video;
+        if (!videoDev || !videoDev.provider) {
+            console.warn("Handpose: video device not available");
+            return;
+        }
+        this.video = videoDev.provider.video;
+        if (!this.video) {
+            console.warn("Handpose: video element null after enableVideo resolved", videoDev.provider);
+            return;
+        }
+
+        alert(Message.please_wait[this._locale]);
+
+        this._handpose = ml5.handpose(this.video, () => {
+            console.log("Model loaded!");
+        });
+
+        this._handpose.on("predict", (hands) => {
+            hands.forEach((hand) => {
+                this.landmarks = hand.landmarks;
+            });
+        });
     }
 
     /**

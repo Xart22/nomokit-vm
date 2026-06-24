@@ -64,7 +64,7 @@ class OB2ScratchBlocks {
         this.objectDetector = ml5.objectDetector("cocossd", {}, () => {
             this.modelReady = true;
         });
-        this.firstLayer = document.querySelector("canvas");
+        this.firstLayer = (runtime.renderer && runtime.renderer.canvas) || document.querySelector("canvas");
         if (this.firstLayer) {
             this.canvas = document.createElement("canvas");
             this.canvas.style.position = "absolute";
@@ -81,7 +81,11 @@ class OB2ScratchBlocks {
             );
             this.ctx = this.canvas.getContext("2d");
         }
-        this.runtime.ioDevices.video.enableVideo();
+        try {
+            this.runtime.ioDevices.video.enableVideo();
+        } catch (_e) {
+            // Video device may not be available
+        }
 
         this.confidenceThreshold = 0.5;
         this.showBounding = true;
@@ -345,16 +349,37 @@ class OB2ScratchBlocks {
     }
 
     analyseImageFrom() {
-        if (!this.objectDetector || !this.modelReady) {
+        if (!this.objectDetector) {
             return Promise.resolve([]);
         }
-        if (!this.firstLayer || !this.canvas) {
+        if (!this.modelReady) {
+            return new Promise((resolve) => {
+                const waitForModel = () => {
+                    if (this.modelReady) {
+                        resolve(this._doAnalyse());
+                    } else {
+                        setTimeout(waitForModel, 200);
+                    }
+                };
+                waitForModel();
+            });
+        }
+        return this._doAnalyse();
+    }
+
+    _doAnalyse() {
+        const videoEl = this.runtime && this.runtime.ioDevices && this.runtime.ioDevices.video && this.runtime.ioDevices.video.provider && this.runtime.ioDevices.video.provider.video;
+        if (!videoEl || !this.canvas || !this.ctx) {
             return Promise.resolve([]);
         }
-        this.canvas.width = this.firstLayer.width;
-        this.canvas.height = this.firstLayer.height;
+        if (this.firstLayer) {
+            this.canvas.width = this.firstLayer.width;
+            this.canvas.height = this.firstLayer.height;
+        }
+        // Draw current video frame to overlay canvas so ml5 can read it
+        this.ctx.drawImage(videoEl, 0, 0, this.canvas.width, this.canvas.height);
         return new Promise((resolve) => {
-            this.objectDetector.detect(this.firstLayer, (error, results) => {
+            this.objectDetector.detect(this.canvas, (error, results) => {
                 if (error) {
                     console.error(error);
                     resolve([]);
