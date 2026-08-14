@@ -65,7 +65,7 @@ class CommonPeripheral {
         originalDeviceId,
         pnpidList,
         serialConfig,
-        diveceOpt
+        diveceOpt,
     ) {
         /**
          * The OpenBlock runtime used to trigger the green flag button.
@@ -161,10 +161,18 @@ class CommonPeripheral {
             const mode = this._runtime._micropythonMode;
             delete this._runtime._micropythonMode;
             const base64Str = Buffer.from(code).toString("base64");
-            if (mode === 'flash') {
-                this._serialport.upload(base64Str, { type: "micropython", flashOnly: true, board: "esp32" }, "base64");
-            } else if (mode === 'detect') {
-                this._serialport.upload(base64Str, { type: "micropython", detectOnly: true }, "base64");
+            if (mode === "flash") {
+                this._serialport.upload(
+                    base64Str,
+                    { type: "micropython", flashOnly: true, board: "esp32" },
+                    "base64",
+                );
+            } else if (mode === "detect") {
+                this._serialport.upload(
+                    base64Str,
+                    { type: "micropython", detectOnly: true },
+                    "base64",
+                );
             }
             return;
         }
@@ -194,7 +202,7 @@ class CommonPeripheral {
             type: "micropython",
             fileName: opts.fileName || "main.py",
             board: opts.board || "esp32",
-            baudRate: opts.baudRate || 115200
+            baudRate: opts.baudRate || 115200,
         };
         if (opts.flashOnly) {
             config.flashOnly = true;
@@ -205,6 +213,27 @@ class CommonPeripheral {
         if (opts.detectOnly) {
             config.detectOnly = true;
         }
+        this._serialport.upload(base64Str, config, "base64");
+    }
+
+    /**
+     * Upload multiple files to MicroPython via backend raw REPL.
+     * Backend opens the COM port exclusively (after the live session
+     * disconnects) to avoid the layered WebSocket write burst that can
+     * destabilize Windows USB-serial drivers (WDF_VIOLATION / BSOD).
+     * @param {Array<{path:string,name:string,content:string}>} files
+     * @param {Array<string>} folders
+     * @param {object} [opts]
+     */
+    micropythonUploadFiles(files, folders, opts = {}) {
+        const payload = JSON.stringify({ files, folders });
+        const base64Str = Buffer.from(payload, "utf-8").toString("base64");
+        const config = {
+            type: "micropython",
+            uploadOnly: true,
+            board: opts.board || "esp32",
+            baudRate: opts.baudRate || 115200,
+        };
         this._serialport.upload(base64Str, config, "base64");
     }
 
@@ -249,12 +278,12 @@ class CommonPeripheral {
                     pnpid: listAll
                         ? ["*"]
                         : pnpidList
-                        ? pnpidList
-                        : this.pnpidList,
+                          ? pnpidList
+                          : this.pnpidList,
                 },
             },
             this._onConnect,
-            this.reset
+            this.reset,
         );
     }
 
@@ -301,11 +330,11 @@ class CommonPeripheral {
         this._stopHeartbeat();
         this._runtime.removeListener(
             this._runtime.constructor.PROGRAM_MODE_UPDATE,
-            this._handleProgramModeUpdate
+            this._handleProgramModeUpdate,
         );
         this._runtime.removeListener(
             this._runtime.constructor.PERIPHERAL_UPLOAD_SUCCESS,
-            this._startHeartbeat
+            this._startHeartbeat,
         );
     }
 
@@ -352,7 +381,7 @@ class CommonPeripheral {
                 // This happens after connecting to a device that is not running the firmata service.
                 this._firmataReadyTimeoutID = window.setTimeout(() => {
                     this._serialport.handleRealtimeDisconnectError(
-                        ConnectFirmataTimeout
+                        ConnectFirmataTimeout,
                     );
                 }, FirmataReadyTimeout);
 
@@ -379,7 +408,7 @@ class CommonPeripheral {
                     this._firmataTimeoutID = window.setTimeout(() => {
                         this._isFirmataConnected = false;
                         this._serialport.handleRealtimeDisconnectError(
-                            ConnectFirmataTimeout
+                            ConnectFirmataTimeout,
                         );
                     }, FrimataHeartbeatTimeout);
                 });
@@ -395,7 +424,7 @@ class CommonPeripheral {
                 this._firmataTimeoutID = window.setTimeout(() => {
                     this._isFirmataConnected = false;
                     this._serialport.handleRealtimeDisconnectError(
-                        ConnectFirmataTimeout
+                        ConnectFirmataTimeout,
                     );
                 }, FrimataHeartbeatTimeout);
             }
@@ -432,7 +461,7 @@ class CommonPeripheral {
         this._firmataTimeoutID = window.setTimeout(() => {
             this._isFirmataConnected = false;
             this._serialport.handleRealtimeDisconnectError(
-                ConnectFirmataTimeout
+                ConnectFirmataTimeout,
             );
         }, FrimataHeartbeatTimeout);
     }
@@ -487,11 +516,11 @@ class CommonPeripheral {
 
         this._runtime.on(
             this._runtime.constructor.PROGRAM_MODE_UPDATE,
-            this._handleProgramModeUpdate
+            this._handleProgramModeUpdate,
         );
         this._runtime.on(
             this._runtime.constructor.PERIPHERAL_UPLOAD_SUCCESS,
-            this._startHeartbeat
+            this._startHeartbeat,
         );
     }
 
@@ -506,7 +535,7 @@ class CommonPeripheral {
         const consoleData = Buffer.from(base64, "base64");
         this._runtime.emit(
             this._runtime.constructor.PERIPHERAL_RECIVE_DATA,
-            consoleData
+            consoleData,
         );
 
         if (this._runtime.isRealtimeMode()) {
@@ -612,7 +641,7 @@ class CommonPeripheral {
                             value = 0;
                         }
                         resolve(value);
-                    }
+                    },
                 );
                 window.setTimeout(() => {
                     resolve();
