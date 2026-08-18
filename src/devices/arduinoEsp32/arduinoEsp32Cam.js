@@ -13,6 +13,7 @@ const CommonPeripheral = require("../common/common-peripheral");
 const PNPID_LIST = [
     // CH340
     "USB\\VID_1A86&PID_7523",
+    "USB\\VID_0403&PID_6001",
 ];
 
 /**
@@ -136,7 +137,7 @@ class ArduinoEsp32Cam extends CommonPeripheral {
             originalDeviceId,
             PNPID_LIST,
             SERIAL_CONFIG,
-            DIVECE_OPT
+            DIVECE_OPT,
         );
     }
 }
@@ -153,7 +154,8 @@ class OpenBlockArduinoEsp32CamDevice {
     }
 
     get PINS_MENU() {
-        return [{
+        return [
+            {
                 text: "IO0",
                 value: Pins.IO0,
             },
@@ -222,7 +224,8 @@ class OpenBlockArduinoEsp32CamDevice {
     }
 
     get OUT_PINS_MENU() {
-        return [{
+        return [
+            {
                 text: "IO0",
                 value: Pins.IO0,
             },
@@ -292,7 +295,8 @@ class OpenBlockArduinoEsp32CamDevice {
     }
 
     get MODE_MENU() {
-        return [{
+        return [
+            {
                 text: formatMessage({
                     id: "arduinoEsp32.modeMenu.input",
                     default: "input",
@@ -328,7 +332,8 @@ class OpenBlockArduinoEsp32CamDevice {
     }
 
     get ANALOG_PINS_MENU() {
-        return [{
+        return [
+            {
                 text: "IO0",
                 value: Pins.IO0,
             },
@@ -360,7 +365,8 @@ class OpenBlockArduinoEsp32CamDevice {
     }
 
     get LEVEL_MENU() {
-        return [{
+        return [
+            {
                 text: formatMessage({
                     id: "arduinoEsp32.levelMenu.high",
                     default: "high",
@@ -380,7 +386,8 @@ class OpenBlockArduinoEsp32CamDevice {
     }
 
     get LEDC_CHANNELS_MENU() {
-        return [{
+        return [
+            {
                 text: "CH0 (LT0)",
                 value: Channels.CH0,
             },
@@ -448,7 +455,8 @@ class OpenBlockArduinoEsp32CamDevice {
     }
 
     get TOUCH_PINS_MENU() {
-        return [{
+        return [
+            {
                 text: "IO0",
                 value: Pins.IO0,
             },
@@ -480,7 +488,8 @@ class OpenBlockArduinoEsp32CamDevice {
     }
 
     get INTERRUP_MODE_MENU() {
-        return [{
+        return [
+            {
                 text: formatMessage({
                     id: "arduinoEsp32.InterrupModeMenu.risingEdge",
                     default: "rising edge",
@@ -524,7 +533,8 @@ class OpenBlockArduinoEsp32CamDevice {
     }
 
     get SERIAL_NO_MENU() {
-        return [{
+        return [
+            {
                 text: "0",
                 value: SerialNo.Serial0,
             },
@@ -541,7 +551,8 @@ class OpenBlockArduinoEsp32CamDevice {
     }
 
     get BAUDTATE_MENU() {
-        return [{
+        return [
+            {
                 text: "4800",
                 value: Buadrate.B4800,
             },
@@ -573,7 +584,8 @@ class OpenBlockArduinoEsp32CamDevice {
     }
 
     get EOL_MENU() {
-        return [{
+        return [
+            {
                 text: formatMessage({
                     id: "arduinoEsp32.eolMenu.warp",
                     default: "warp",
@@ -593,7 +605,8 @@ class OpenBlockArduinoEsp32CamDevice {
     }
 
     get DATA_TYPE_MENU() {
-        return [{
+        return [
+            {
                 text: formatMessage({
                     id: "arduinoEsp32.dataTypeMenu.integer",
                     default: "integer",
@@ -636,7 +649,7 @@ class OpenBlockArduinoEsp32CamDevice {
         this._peripheral = new ArduinoEsp32Cam(
             this.runtime,
             this.DEVICE_ID,
-            originalDeviceId
+            originalDeviceId,
         );
     }
 
@@ -644,18 +657,21 @@ class OpenBlockArduinoEsp32CamDevice {
      * @returns {Array.<object>} metadata for this extension and its blocks.
      */
     getInfo() {
-        return [{
+        return [
+            {
                 id: "pin",
                 name: formatMessage({
                     id: "arduinoEsp32.category.pins",
                     default: "Pins",
-                    description: "The name of the esp32 arduino device pin category",
+                    description:
+                        "The name of the esp32 arduino device pin category",
                 }),
                 color1: "#4C97FF",
                 color2: "#3373CC",
                 color3: "#3373CC",
 
-                blocks: [{
+                blocks: [
+                    {
                         opcode: "setPinMode",
                         text: formatMessage({
                             id: "arduinoEsp32.pins.setPinMode",
@@ -701,7 +717,8 @@ class OpenBlockArduinoEsp32CamDevice {
                         opcode: "esp32SetPwmOutput",
                         text: formatMessage({
                             id: "arduinoEsp32.pins.esp32SetPwmOutput",
-                            default: "set pwm pin [PIN] use channel [CH] out [OUT]",
+                            default:
+                                "set pwm pin [PIN] use channel [CH] out [OUT]",
                             description: "arduinoEsp32 set pwm pin out",
                         }),
                         blockType: BlockType.COMMAND,
@@ -776,7 +793,8 @@ class OpenBlockArduinoEsp32CamDevice {
                         opcode: "esp32SetServoOutput",
                         text: formatMessage({
                             id: "arduinoEsp32.pins.setServoOutput",
-                            default: "set servo pin [PIN] use channel [CH] out [OUT]",
+                            default:
+                                "set servo pin [PIN] use channel [CH] out [OUT]",
                             description: "arduinoEsp32 set servo pin out",
                         }),
                         blockType: BlockType.COMMAND,
@@ -802,7 +820,8 @@ class OpenBlockArduinoEsp32CamDevice {
                         opcode: "esp32AttachInterrupt",
                         text: formatMessage({
                             id: "arduinoEsp32.pins.esp32AttachInterrupt",
-                            default: "attach interrupt pin [PIN] mode [MODE] executes",
+                            default:
+                                "attach interrupt pin [PIN] mode [MODE] executes",
                             description: "arduinoEsp32 attach interrupt",
                         }),
                         blockType: BlockType.CONDITIONAL,
@@ -871,13 +890,15 @@ class OpenBlockArduinoEsp32CamDevice {
                 name: formatMessage({
                     id: "arduinoEsp32.category.serial",
                     default: "Serial",
-                    description: "The name of the arduino esp32 device serial category",
+                    description:
+                        "The name of the arduino esp32 device serial category",
                 }),
                 color1: "#9966FF",
                 color2: "#774DCB",
                 color3: "#774DCB",
 
-                blocks: [{
+                blocks: [
+                    {
                         opcode: "multiSerialBegin",
                         text: formatMessage({
                             id: "arduinoEsp32.serial.multiSerialBegin",
@@ -930,7 +951,8 @@ class OpenBlockArduinoEsp32CamDevice {
                         text: formatMessage({
                             id: "arduinoEsp32.serial.multiSerialAvailable",
                             default: "serial [NO] available data length",
-                            description: "arduinoEsp32 multi serial available data length",
+                            description:
+                                "arduinoEsp32 multi serial available data length",
                         }),
                         arguments: {
                             NO: {
@@ -947,7 +969,8 @@ class OpenBlockArduinoEsp32CamDevice {
                         text: formatMessage({
                             id: "arduinoEsp32.serial.multiSerialReadAByte",
                             default: "serial [NO] read a byte",
-                            description: "arduinoEsp32 multi serial read a byte",
+                            description:
+                                "arduinoEsp32 multi serial read a byte",
                         }),
                         arguments: {
                             NO: {
@@ -977,17 +1000,20 @@ class OpenBlockArduinoEsp32CamDevice {
                 name: formatMessage({
                     id: "arduinoEsp32.category.data",
                     default: "Data",
-                    description: "The name of the arduino esp32 device data category",
+                    description:
+                        "The name of the arduino esp32 device data category",
                 }),
                 color1: "#CF63CF",
                 color2: "#C94FC9",
                 color3: "#BD42BD",
 
-                blocks: [{
+                blocks: [
+                    {
                         opcode: "dataMap",
                         text: formatMessage({
                             id: "arduinoEsp32.data.dataMap",
-                            default: "map [DATA] from ([ARG0], [ARG1]) to ([ARG2], [ARG3])",
+                            default:
+                                "map [DATA] from ([ARG0], [ARG1]) to ([ARG2], [ARG3])",
                             description: "arduinoEsp32 data map",
                         }),
                         blockType: BlockType.REPORTER,
@@ -1019,7 +1045,8 @@ class OpenBlockArduinoEsp32CamDevice {
                         opcode: "dataConstrain",
                         text: formatMessage({
                             id: "arduinoEsp32.data.dataConstrain",
-                            default: "constrain [DATA] between ([ARG0], [ARG1])",
+                            default:
+                                "constrain [DATA] between ([ARG0], [ARG1])",
                             description: "arduinoEsp32 data constrain",
                         }),
                         blockType: BlockType.REPORTER,
@@ -1066,7 +1093,8 @@ class OpenBlockArduinoEsp32CamDevice {
                         text: formatMessage({
                             id: "arduinoEsp32.data.dataConvertASCIICharacter",
                             default: "convert [DATA] to ASCII character",
-                            description: "arduinoEsp32 data convert to ASCII character",
+                            description:
+                                "arduinoEsp32 data convert to ASCII character",
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
@@ -1082,7 +1110,8 @@ class OpenBlockArduinoEsp32CamDevice {
                         text: formatMessage({
                             id: "arduinoEsp32.data.dataConvertASCIINumber",
                             default: "convert [DATA] to ASCII nubmer",
-                            description: "arduinoEsp32 data convert to ASCII nubmer",
+                            description:
+                                "arduinoEsp32 data convert to ASCII nubmer",
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
