@@ -37,6 +37,7 @@ const builtinExtensions = {
     speech: () => require("../extensions/scratch3_speech2"),
     speech2text: () => require("../extensions/scratch3_speech2text"),
     nlp: () => require("../extensions/nlp"),
+    wedo2: () => require('../extensions/scratch3_wedo2'),
 };
 
 const builtinDevices = {
@@ -86,6 +87,7 @@ const builtinDevices = {
         require("../devices/arduinoEsp8266/nomoBotStarterKit"),
     nobotAi: () => require("../devices/arduinoEsp32/arduinoEsp32NobotAI"),
     arduinoEsp32Gbot: () => require("../devices/arduinoEsp32/arduinoEsp32Gbot"),
+    
 
     // TODO: transform these to device extension.
     // wedo2: () => require('../extensions/scratch3_wedo2'),
@@ -535,10 +537,12 @@ class ExtensionManager {
             let extensionId = null;
             let deviceId = null;
             // get deviceId or extensions Id
+            // Use slice(2).join('_') so ids containing '_' are preserved.
+            const idPart = serviceName.split("_").slice(2).join("_");
             if (serviceName.startsWith("device")) {
-                deviceId = serviceName.split("_")[2];
+                deviceId = idPart;
             } else {
-                extensionId = serviceName.split("_")[2];
+                extensionId = idPart;
             }
             return {
                 extensionId,
@@ -629,13 +633,18 @@ class ExtensionManager {
      * @returns {string} The name of the registered extension service
      */
     _registerInternalExtension(extensionObject) {
-        const extensionId = extensionObject.EXTENSION_ID;
+        const extensionId =
+            extensionObject.EXTENSION_ID ||
+            (extensionObject.constructor && extensionObject.constructor.EXTENSION_ID);
+        const deviceId =
+            extensionObject.DEVICE_ID ||
+            (extensionObject.constructor && extensionObject.constructor.DEVICE_ID);
         const fakeWorkerId = this.nextExtensionWorker++;
         let serviceName;
         if (extensionId) {
             serviceName = `extension_${fakeWorkerId}_${extensionId}`;
         } else {
-            serviceName = `device_${fakeWorkerId}_${extensionObject.DEVICE_ID}`;
+            serviceName = `device_${fakeWorkerId}_${deviceId}`;
         }
         dispatch.setServiceSync(serviceName, extensionObject);
         dispatch.callSync(
@@ -693,6 +702,12 @@ class ExtensionManager {
      * @private
      */
     _prepareExtensionInfo(serviceName, extensionInfo, id) {
+        // Backward compatibility: legacy peripheral extensions (wedo2, microbit,
+        // ev3, boost, gdxfor) return a single category object, while newer
+        // extensions return an array of categories.
+        if (extensionInfo && !Array.isArray(extensionInfo)) {
+            extensionInfo = [extensionInfo];
+        }
         extensionInfo = Object.assign([], extensionInfo);
         extensionInfo.map((category) => {
             if (!/^[a-z0-9]+$/i.test(category.id)) {

@@ -444,7 +444,11 @@ class Scratch3NLPBlocks {
 
     async downloadCsv(args) {
         if (!this._checkDesktop()) return;
-        const data = Cast.toString(args.DATA);
+        // Manual DATA wins; fall back to uploaded CSV content when empty.
+        // Prevents saving literal "undefined" for an empty arg.
+        const manual = Cast.toString(args.DATA || "");
+        const data = manual !== "" ? manual : this._lastCsvContent || "";
+        if (!data) return; // nothing to save
         try {
             await window.electronAPI.nlp.downloadCsv(data);
         } catch (e) {

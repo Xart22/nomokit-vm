@@ -1,4 +1,5 @@
 const JSONRPC = require('../util/jsonrpc');
+const log = require('../util/log');
 
 class BLE extends JSONRPC {
 
@@ -157,6 +158,16 @@ class BLE extends JSONRPC {
             params.withResponse = withResponse;
         }
         return this.sendRemoteRequest('write', params)
+            .then(result => {
+                // The desktop link reports write failures as a result object
+                // (not a JSONRPC error) so a single failed write doesn't drop
+                // the whole BLE connection. Surface it as a warning instead.
+                // Old links return a plain number; tolerate both shapes.
+                if (result && result.writeError) {
+                    log.warn(`BLE write failed (${serviceId}/${characteristicId}): ${result.writeError}`);
+                }
+                return result;
+            })
             .catch(e => {
                 this.handleDisconnectError(e);
             });

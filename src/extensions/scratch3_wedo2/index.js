@@ -108,7 +108,10 @@ const WeDo2Command = {
 const WeDo2Mode = {
     TILT: 0, // angle
     DISTANCE: 0, // detect
-    LED: 1 // RGB
+    // NOTE: LED must be 0 (absolute/RGB mode) because setLED() sends an
+    // RGB triple [R,G,B]. Mode 1 is discrete/index mode, which expects a
+    // single color-index byte, so the hub ignores RGB writes in that mode.
+    LED: 0 // RGB absolute
 };
 
 /**
@@ -299,7 +302,11 @@ class WeDo2Motor {
      * Start active braking on this motor. After a short time, the motor will turn off.
      */
     startBraking () {
-        if (this._power === 0) return;
+        if (this._power === 0) {
+            // Power was set to 0 mid-run: braking is meaningless, just stop.
+            this.turnOff();
+            return;
+        }
 
         const cmd = this._parent.generateOutputCommand(
             this._index + 1,
@@ -318,8 +325,10 @@ class WeDo2Motor {
      * @param {boolean} [useLimiter=true] - if true, use the rate limiter
      */
     turnOff (useLimiter = true) {
-        if (this._power === 0) return;
-
+        // NOTE: no power guard here on purpose. The stop command (value 0)
+        // must always be sent, even when stored power is 0 (e.g. user ran
+        // "set power to 0" while the motor was still spinning). Otherwise
+        // the motor can get stuck ON with no way to stop it.
         const cmd = this._parent.generateOutputCommand(
             this._index + 1,
             WeDo2Command.MOTOR_POWER,
@@ -329,6 +338,7 @@ class WeDo2Motor {
         this._parent.send(BLECharacteristic.OUTPUT_COMMAND, cmd, useLimiter);
 
         this._isOn = false;
+        this._clearTimeout();
     }
 
     /**
@@ -506,7 +516,11 @@ class WeDo2 {
     }
 
     /**
-     * Sets the input mode of the LED to RGB.
+     * Sets the input mode of the LED to absolute RGB.
+     * Byte template follows the WeDo 2.0 protocol reference exactly:
+     * [01,02,06,17,00, 01,00,00,00, 00,01] (mode 0 = absolute, delta 1,
+     * unit 0, notifications on). The hub ignores RGB triple writes unless
+     * the LED port is in absolute mode with this format applied.
      * @return {Promise} - a promise returned by the send operation.
      */
     setLEDMode () {
@@ -514,9 +528,9 @@ class WeDo2 {
             WeDo2ConnectID.LED,
             WeDo2Device.LED,
             WeDo2Mode.LED,
-            0,
+            1,
             WeDo2Unit.LED,
-            false
+            true
         );
 
         return this.send(BLECharacteristic.INPUT_COMMAND, cmd);
@@ -665,7 +679,11 @@ class WeDo2 {
             BLEService.IO_SERVICE,
             uuid,
             Base64Util.uint8ArrayToBase64(message),
-            'base64'
+            'base64',
+            // Use write-with-response: fire-and-forget writes to the WeDo hub
+            // are silently dropped on some BLE stacks (motor/LED never act),
+            // while with-response writes complete reliably (cf. microbit).
+            true
         );
     }
 
@@ -683,10 +701,13 @@ class WeDo2 {
     generateOutputCommand (connectID, commandID, values = null) {
         let command = [connectID, commandID];
         if (values) {
+            // Mask to 0-255 and round: direction can make power negative,
+            // and power mapping can produce floats. BLE expects bytes.
+            const safeValues = values.map(v => Math.round(v) & 0xFF);
             command = command.concat(
-                values.length
+                safeValues.length
             ).concat(
-                values
+                safeValues
             );
         }
         return command;
@@ -731,13 +752,41 @@ class WeDo2 {
      * @private
      */
     _onConnect () {
-        this.setLEDMode();
-        this.setLED(0x0000FF);
-        this._ble.startNotifications(
-            BLEService.DEVICE_SERVICE,
-            BLECharacteristic.ATTACHED_IO,
-            this._onMessage
-        );
+        // Chain the initial writes: the hub must apply the LED input mode
+        // BEFORE it receives the first RGB command. Concurrent writes to the
+        // same characteristic are not queued by the BLE stack, so sending
+        // both at once risks the RGB write landing while the port is still
+        // in discrete mode (and being ignored).
+        Promise.resolve()
+            .then(() => this.setLEDMode())
+            .then(() => this.setLED(0x0000FF))
+            .catch(() => {
+                // Initial LED setup is best-effort; connection must proceed.
+            })
+            .then(() => {
+                this._ble.startNotifications(
+                    BLEService.DEVICE_SERVICE,
+                    BLECharacteristic.ATTACHED_IO,
+                    this._onMessage
+                );
+            })
+            .catch(() => {});
+        // Motors/sensors already attached before connect may not re-emit
+        // ATTACHED_IO notifications. Read once to populate initial _ports/_motors.
+        // Isolated to WeDo: Arduino/Microbit use serial path, untouched.
+        // NOTE: desktop noble exposes ATTACHED_IO as notify-only, so this read
+        // fails there (logged by the link) and attach relies on notifications.
+        if (this._ble.read) {
+            this._ble.read(
+                BLEService.DEVICE_SERVICE,
+                BLECharacteristic.ATTACHED_IO,
+                false
+            ).then(message => {
+                if (typeof message === 'string' && message.length > 0) {
+                    this._onMessage(message);
+                }
+            }).catch(() => {});
+        }
         this._batteryLevelIntervalId = window.setInterval(this._checkBatteryLevel, BLEBatteryCheckInterval);
     }
 
@@ -748,7 +797,6 @@ class WeDo2 {
      */
     _onMessage (base64) {
         const data = Base64Util.base64ToUint8Array(base64);
-        // log.info(data);
 
         /**
          * If first byte of data is '1' or '2', then either clear the
@@ -762,9 +810,11 @@ class WeDo2 {
             const connectID = data[0];
             if (data[1] === 0) {
                 // clear sensor or motor
+                log.info(`WeDo2 port ${connectID} detached`);
                 this._clearPort(connectID);
             } else {
                 // register sensor or motor
+                log.info(`WeDo2 port ${connectID} attached type ${data[3]} raw [${Array.from(data)}]`);
                 this._registerSensorOrMotor(connectID, data[3]);
             }
             break;
@@ -1311,6 +1361,9 @@ class Scratch3WeDo2Blocks {
                 const motor = this._peripheral.motor(motorIndex);
                 if (motor) {
                     motor.turnOnFor(durationMS);
+                } else {
+                    log.warn(`WeDo2 motorOnFor: no motor on port ${motorIndex + 1} ` +
+                        `(MOTOR_ID=${args.MOTOR_ID}, ports=${JSON.stringify(this._peripheral._ports)})`);
                 }
             });
 
@@ -1331,6 +1384,9 @@ class Scratch3WeDo2Blocks {
             const motor = this._peripheral.motor(motorIndex);
             if (motor) {
                 motor.turnOn();
+            } else {
+                log.warn(`WeDo2 motorOn: no motor on port ${motorIndex + 1} ` +
+                    `(MOTOR_ID=${args.MOTOR_ID}, ports=${JSON.stringify(this._peripheral._ports)})`);
             }
         });
 
