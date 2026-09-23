@@ -31,6 +31,7 @@ const builtinExtensions = {
     makeymakey: () => require("../extensions/scratch3_makeymakey"),
     ml: () => require("../extensions/scratch3_ml"),
     tm2scratch: () => require("../extensions/tm2scratch"),
+    nomokitml: () => require("../extensions/nomokitml"),
     ob2scratch: () => require("../extensions/ob2scratch"),
     tmpose2scratch: () => require("../extensions/tmpose2crath"),
     handpose2scratch: () => require("../extensions/handpose2scratch"),
